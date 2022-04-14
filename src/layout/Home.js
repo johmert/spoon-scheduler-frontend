@@ -1,8 +1,16 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import UserForm from "./Form";
+import UserForm from "./UserForm";
 
 function Home() {
+
+    return (
+        <div>
+            <p className="h3">This is the home page</p>
+        </div>
+    )
+
+    /*
     return (
         <div>
             <Switch>
@@ -20,6 +28,7 @@ function Home() {
             </Switch>
         </div>
     )
+    */
 }
 
 export default Home;
