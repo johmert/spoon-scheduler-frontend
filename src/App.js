@@ -6,7 +6,7 @@ import useToken from './utils/useToken';
 
 function App() {
   const { token, setToken } = useToken();
-  if(!token) return <UserForm mode="login" setToken={setToken} />
+  if(!token) return <UserForm setToken={setToken} />
   return (
     <Router>
       <div className="App">
