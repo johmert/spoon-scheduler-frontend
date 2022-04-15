@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { createUser, loginUser } from "../utils/api/index"
 import Button from "react-bootstrap/Button"
+import Container from "react-bootstrap/Container"
+import Form from "react-bootstrap/Form"
 
 function UserForm({setToken}) {
     const [mode, setMode] = useState("login");
@@ -12,19 +14,18 @@ function UserForm({setToken}) {
 
     const loginForm = (
         <div>
-            <Button className="primary" type="submit">Submit</Button>
+            <Button variant="primary" type="submit">Submit</Button>
             <span className="mx-3">Not a user? </span>
-            <Button className="outline-primary" onClick={clickRegister}>Register Now!</Button>        
+            <Button variant="outline-primary" onClick={clickRegister}>Register Now!</Button>        
         </div>
     );
 
     const registerForm = (<>
-        <label>
-            <p>Confirm Password: </p>
-            <input type="password" onChange={e => setConfirmPassword(e.target.value)} />                
-        </label>
+        <Form.Label>Confirm Password: </Form.Label>
+        <Form.Control className="mb-3" type="password" onChange={e => setConfirmPassword(e.target.value)} />                
         <div>
-            <Button className="primary" type="submit">Submit</Button>
+            <Button variant="primary" type="submit">Submit</Button>
+            <Button variant="outline-primary" onClick={()=> window.location.reload(false)}>Cancel</Button>
         </div>
     </>);
 
@@ -66,20 +67,16 @@ function UserForm({setToken}) {
     }
 
     return(
-        <div>
+        <Container>
             <span className="h1">Please {label}</span>
-            <form className="container" onSubmit={handleSubmit}>
-                <label>
-                    <p>Username: </p>
-                    <input type="text" onChange={e => setUsername(e.target.value)} />
-                </label>                
-                <label>
-                    <p>Password: </p>
-                    <input type="password" onChange={e => setPassword(e.target.value)} />
-                </label>
+            <Form className="container" onSubmit={handleSubmit}>
+                <Form.Label>Username: </Form.Label>
+                <Form.Control className="mb-3" type="text" onChange={e => setUsername(e.target.value)} />                
+                <Form.Label>Password: </Form.Label>
+                <Form.Control className="mb-3" type="password" onChange={e => setPassword(e.target.value)} />
                 {form}
-            </form>
-        </div>
+            </Form>
+        </Container>
     )
 }
 
