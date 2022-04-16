@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Home />
+        <Home userId={token.user_id} />
       </div>
     </Router>
   );
