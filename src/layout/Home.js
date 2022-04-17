@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { readUser } from "../utils/api/index";
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import Event from "./Event";
 import EventForm from "./EventForm";
 import Schedule from "./Schedule";
 
@@ -9,6 +13,7 @@ function Home({userId}) {
         user_id: userId,
         username: '',
         settings: '',
+        avg_spoons: 0
     }
     const [user, setUser] = useState(initialState);
     
@@ -32,15 +37,26 @@ function Home({userId}) {
 
     return (
         <div>
-            <p className="h3">This is the home page</p>
-            <p>{user.username}</p>
-            <p>{user.avg_spoons}</p>
+            <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark">
+                <Container>
+                    <Navbar.Brand href={`${user.settings}`}>Spoon Scheduler</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                    <Navbar.Collapse id="responsive-navbar-nav">
+                        <Nav className= "me-auto">
+                            <Nav.Link href="1-day">1-day</Nav.Link>
+                            <Nav.Link href="3-day">3-day</Nav.Link>
+                           <Nav.Link href="week">Week</Nav.Link>
+                            <Nav.Link href="month">Month</Nav.Link>
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
             <Switch>
                 <Route path="/:date/:eventId/editEvent">
                     <EventForm />
                 </Route>
                 <Route path="/:date/:eventId">
-                    <p>read specific event</p>
+                    <Event />
                 </Route>
                 <Route path="/:date">
                     <Schedule mode="day" />
