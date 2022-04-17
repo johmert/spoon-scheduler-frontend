@@ -6,6 +6,7 @@ import Form from "react-bootstrap/Form"
 import Stack from "react-bootstrap/Stack"
 
 function UserForm({setToken}) {
+    const [form, setForm] = useState();
     const [mode, setMode] = useState("login");
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
@@ -13,27 +14,26 @@ function UserForm({setToken}) {
     const abortController = new AbortController();
     const label = mode === "login" ? "Login" : "Register";
 
-    const loginForm = (
-        <Stack className="d-flex justify-content-center">
-            <Button className="mb-3" variant="primary" type="submit">Submit</Button>
-            <p className="my-2 align-self-center">Not a user? </p>
-            <Button variant="outline-primary" onClick={clickRegister}>Register Now!</Button> 
-        </Stack>
-    );
-
-    const registerForm = (<>
-        <Form.Label>Confirm Password: </Form.Label>
-        <Form.Control className="mb-3" type="password" onChange={e => setConfirmPassword(e.target.value)} />                
-        <Stack className="d-flex justify-content-center">
-            <Button className="mb-3" variant="primary" type="submit">Submit</Button>
-            <Button variant="outline-primary" onClick={()=> window.location.reload(false)}>Cancel</Button>
-        </Stack>
-    </>);
-
-    const [form, setForm] = useState(loginForm);
-
-
     useEffect(() => {
+        
+        const loginForm = (
+            <Stack className="d-flex justify-content-center">
+                <Button className="mb-3" variant="primary" type="submit">Submit</Button>
+                <p className="my-2 align-self-center">Not a user? </p>
+                <Button variant="outline-primary" onClick={clickRegister}>Register Now!</Button> 
+            </Stack>
+        );
+
+        const registerForm = (<>
+            <Form.Label>Confirm Password: </Form.Label>
+            <Form.Control className="mb-3" type="password" onChange={e => setConfirmPassword(e.target.value)} />                
+            <Stack className="d-flex justify-content-center">
+                <Button className="mb-3" variant="primary" type="submit">Submit</Button>
+                <Button variant="outline-primary" onClick={()=> window.location.reload(false)}>Cancel</Button>
+            </Stack>
+        </>);
+
+
         if(mode === "login") {
             setForm(loginForm);
         } else if (mode === "register") {

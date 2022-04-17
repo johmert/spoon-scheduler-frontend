@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { readUser } from "../utils/api/index";
+import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import Stack from "react-bootstrap/Stack"
 import Event from "./Event";
 import EventForm from "./EventForm";
 import Schedule from "./Schedule";
@@ -37,38 +40,47 @@ function Home({userId}) {
 
     return (
         <div>
-            <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark">
-                <Container>
-                    <Navbar.Brand href={`${user.settings}`}>Spoon Scheduler</Navbar.Brand>
+            <Navbar collapseOnSelect expand="sm" bg="primary" variant="dark">
+                <Container className="d-flex justify-content-center">
+                    <Navbar.Brand href="/">Spoon Scheduler</Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className= "me-auto">
-                            <Nav.Link href="1-day">1-day</Nav.Link>
-                            <Nav.Link href="3-day">3-day</Nav.Link>
-                           <Nav.Link href="week">Week</Nav.Link>
-                            <Nav.Link href="month">Month</Nav.Link>
+                            <NavDropdown title="View" id="view-dropdown" >
+                                <NavDropdown.Item>
+                                    <Stack>
+                                        <Button className="d-flex justify-content-center mb-2" variant="outline-primary">1-day</Button>
+                                        <Button className="d-flex justify-content-center mb-2" variant="outline-primary">3-day</Button>
+                                        <Button className="d-flex justify-content-center mb-2" variant="outline-primary">Week</Button>
+                                        <Button className="d-flex justify-content-center" variant="outline-primary">Month</Button>
+                                    </Stack>
+                                </NavDropdown.Item>
+                            </NavDropdown>
+                            <Nav.Link href="addEvent">+ Add New Event</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
             <Switch>
-                <Route path="/:date/:eventId/editEvent">
-                    <EventForm />
+                <Route path={`/${user.user_id}/:date/:eventId/editEvent`}>
+                    <EventForm mode="edit" />
                 </Route>
-                <Route path="/:date/:eventId">
+                <Route path={`/${user.user_id}/:date/:eventId`}>
                     <Event />
                 </Route>
-                <Route path="/:date">
+                <Route path={`/${user.user_id}/:date`}>
                     <Schedule mode="day" />
                 </Route>
-                <Route path="/addEvent">
-                    <EventForm />
+                <Route exact path="/addEvent">
+                    <EventForm mode="create" />
                 </Route>
                 <Route exact path="/">
                     <Schedule mode={user.settings} />
                 </Route>
                 <Route>
-                    <p>Page Not Found!</p>
+                    <div className="d-flex justify-content-center">
+                        <p className="h2">Page Not Found!</p>
+                    </div>
                 </Route>
             </Switch>
         </div>
