@@ -63,7 +63,7 @@ function Home({userId}) {
             </Navbar>
             <Switch>
                 <Route path={`/${user.user_id}/:date/:eventId/editEvent`}>
-                    <EventForm mode="edit" />
+                    <EventForm mode="edit" userId={user} />
                 </Route>
                 <Route path={`/${user.user_id}/:date/:eventId`}>
                     <Event />
@@ -72,7 +72,7 @@ function Home({userId}) {
                     <Schedule mode="day" />
                 </Route>
                 <Route exact path="/addEvent">
-                    <EventForm mode="create" />
+                    <EventForm mode="create" user={user} />
                 </Route>
                 <Route exact path="/">
                     <Schedule mode={user.settings} />

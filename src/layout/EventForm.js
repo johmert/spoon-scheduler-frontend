@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Button from "react-bootstrap/Button"
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
+import { createDay, createEvent, readDay, readEvent, updateEvent } from "../utils/api";
 import SpoonToast from "./SpoonToast";
 
-function EventForm({mode}) {
+
+function EventForm({mode, user}) {
     const initialState = {
         name: '',
         description: '',
@@ -16,32 +18,107 @@ function EventForm({mode}) {
         timeDuration: 0,
         importance: 0,
         date: '',
+        event_id: null,
     }
 
+    const [day, setDay] = useState();
+    const [disabled, setDisabled] = useState(false);
     const [event, setEvent] = useState(initialState);
     const [form, setForm] = useState();
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState(0);
     const [spoonValue, setSpoonValue] = useState(0);
     const abortController = new AbortController();
     const history = useHistory();
+    const { date, eventId } = useParams();
+    const userId = user.user_id;
 
     useEffect(() => {
-        const editForm = (<><p>edit</p></>);
-        const createForm = (<><p>create</p></>);
-
-        if(mode === "edit") {
-            setForm(editForm);
-        } else if (mode === "create") {
-            setForm(createForm);
+        async function getEvent() {
+            if(mode === "create") return;
+            try {
+                const response = await readEvent(date, eventId, userId, abortController.signal);
+                setEvent(response);
+                setForm({ 
+                    name: response.name, 
+                    description: response.description,
+                    spoons: response.spoons,
+                    timeDuration: response.timeDuration,
+                    importance: response.importance,
+                    date: response.date
+                });
+            } catch(error) {
+                if(error.name !== "AbortError") {
+                    throw error;
+                }
+            }
         }
+        getEvent();
         return () => {
             abortController.abort();
         };
         // eslint-disable-next-line
-    }, [mode]);
+    }, [mode, date, eventId, userId]);
 
-    function handleSubmit(event) {
-        event.preventDefault();
+
+    // TODO: fix this!! Need to be able to check if date exists before creating new event
+    // ---> maybe check out your old code from Project Flashcards? Think of how Deck & Cards related there
+    async function getDay() {
+        try {
+            const response = await readDay(form.date, userId, abortController.signal);
+            if(response) return;
+            
+            const newDay = {
+                date: form.date,
+                day_left: 1440,
+                max_spoons: (user.avg_spoons * 2),
+                user_id: userId
+            }
+            await createDay(newDay, userId, abortController.signal);
+        } catch(error) {
+            if(error.name !== "AbortError") {
+                throw error;
+            }
+        }
     }
+
+    function handleImportance(e) {
+        e.target.value === 'on' ?
+            setForm({...form, importance: 1 }) :
+            setForm({...form, importance: 0 });
+    }
+
+    async function handleSubmit(e) {
+        e.preventDefault();
+        const newEvent = {
+            name: form.name,
+            description: form.description,
+            spoons: form.spoons,
+            timeDuration: form.timeDuration,
+            importance: form.importance,
+            date: form.date
+        }
+        if(mode === 'edit') {
+            newEvent.event_id = event.event_id;
+            await updateEvent(newEvent, userId, abortController.signal);
+            history.push("/");
+        } else if(mode === 'create') {
+            await createEvent(newEvent, userId, abortController.signal);
+            history.push("/");
+        }
+        
+    }
+    
+    function handleTimeDurationChange(e, menuType) {
+        if(menuType === 'hours') {
+            setHours((e.target.value)*60);
+        } else if (menuType === 'minutes') {
+            setMinutes(e.target.value);
+        }
+        setForm({ ...form, timeDuration: hours+minutes });
+    }
+
+    
 
     return (
         <Container>
@@ -51,15 +128,15 @@ function EventForm({mode}) {
                 <Form.Control className="mb-3" type="text" onChange={e => setForm({...form, name: e.target.value})} />
                 <div className="d-flex justify-content-between">
                     <SpoonToast />
-                    <Form.Check className="mb-3" type="switch" label="Important" onChange={e => setForm({...form, importance: e.target.value})} /> 
+                    <Form.Check className="mb-3" type="switch" label="Important" onChange={e => handleImportance(e)} /> 
                 </div>
                 <Form.Label>Spoons: </Form.Label>
                 <Form.Group as={Row}>
                     <Col>
-                        <Form.Range max={10} value={spoonValue} onChange={e => setSpoonValue(e.target.value)} />
+                        <Form.Range max={10} value={spoonValue} onChange={e => { setSpoonValue(parseInt(e.target.value)); setForm({...form, spoons: spoonValue}) }} />
                     </Col>
                     <Col>
-                        <Form.Control value={spoonValue} onChange={e => setSpoonValue(e.target.value)} />
+                        <Form.Control value={spoonValue} onChange={e => { setSpoonValue(parseInt(e.target.value)); setForm({...form, spoons: spoonValue}) }} />
                     </Col>
                 </Form.Group>
                 <Form.Label>Description: </Form.Label>
@@ -67,8 +144,9 @@ function EventForm({mode}) {
                 <Form.Label>Date:</Form.Label>
                 <Form.Control className="mb-3" type="date" onChange={e => setForm({...form, date: e.target.value})} />
                 <Form.Label>Duration: </Form.Label>
+                <Form.Check className="mb-3" type="switch" label="All-day" onChange={() => {setDisabled(!disabled); setForm({...form, timeDuration: 1440 })}} />
                 <Stack className="mb-3" direction="horizontal">
-                    <Form.Select size="sm" className="m-1" >
+                    <Form.Select size="sm" className="m-2" disabled={disabled} onChange={e => handleTimeDurationChange(e, 'hours')}>
                         <option className="text-center">Hours</option>
                         <option>1</option>
                         <option>2</option>
@@ -94,7 +172,7 @@ function EventForm({mode}) {
                         <option>22</option>
                         <option>23</option>
                     </Form.Select>
-                    <Form.Select size="sm" className="m-1" >
+                    <Form.Select size="sm" className="m-2" disabled={disabled} onChange={e => handleTimeDurationChange(e, 'minutes')}>
                         <option className="text-center">Minutes</option>
                         <option>00</option>
                         <option>15</option>
