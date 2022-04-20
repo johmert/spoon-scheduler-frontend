@@ -69,35 +69,29 @@ export async function loginUser(credentials, signal) {
 
 export async function readDay(date, userId, signal) {
     const url = `${API_BASE_URL}/users/${userId}/days/${date}`;
-    const getDay = await fetch( url, {
+    return await fetch(url, {
         method: 'GET',
         headers,
         signal
     }).then(data => data.json());
-    const { data } = getDay;
-    return data;
 }
 
 export async function readEvent(date, eventId, userId, signal) {
-    const url = `${API_BASE_URL}/users/${userId}/days/${date}/${eventId}`;
-    const getEvent = await fetch(url, {
+    const url = `${API_BASE_URL}/users/${userId}/days/${date}/events/${eventId}`;
+    return await fetch(url, {
         method: 'GET',
         headers,
         signal
     }).then(data => data.json());
-    const { data } = getEvent;
-    return data;
 }
 
 export async function readUser(userId, signal) {
     const url = `${API_BASE_URL}/users/${userId}`;
-    const user = await fetch(url, {
+    return await fetch(url, {
         method: 'GET',
         headers,
         signal
     }).then(data => data.json());
-    const { data } = user;
-    return data;
 }
 
 export async function updateDay(day, userId, signal) {

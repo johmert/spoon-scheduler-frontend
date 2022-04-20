@@ -6,7 +6,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
-import { createDay, createEvent, readDay, readEvent, updateEvent } from "../utils/api";
+import { createEvent, readEvent, updateEvent } from "../utils/api";
 import SpoonToast from "./SpoonToast";
 
 
@@ -20,8 +20,6 @@ function EventForm({mode, user}) {
         date: '',
         event_id: null,
     }
-
-    const [day, setDay] = useState();
     const [disabled, setDisabled] = useState(false);
     const [event, setEvent] = useState(initialState);
     const [form, setForm] = useState();
@@ -59,28 +57,6 @@ function EventForm({mode, user}) {
         };
         // eslint-disable-next-line
     }, [mode, date, eventId, userId]);
-
-
-    // TODO: fix this!! Need to be able to check if date exists before creating new event
-    // ---> maybe check out your old code from Project Flashcards? Think of how Deck & Cards related there
-    async function getDay() {
-        try {
-            const response = await readDay(form.date, userId, abortController.signal);
-            if(response) return;
-            
-            const newDay = {
-                date: form.date,
-                day_left: 1440,
-                max_spoons: (user.avg_spoons * 2),
-                user_id: userId
-            }
-            await createDay(newDay, userId, abortController.signal);
-        } catch(error) {
-            if(error.name !== "AbortError") {
-                throw error;
-            }
-        }
-    }
 
     function handleImportance(e) {
         e.target.value === 'on' ?

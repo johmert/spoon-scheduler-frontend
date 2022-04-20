@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { readUser } from "../utils/api/index";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Stack from "react-bootstrap/Stack"
+import DayForm from "./DayForm";
 import Event from "./Event";
 import EventForm from "./EventForm";
+import Navigation from "./Navigation";
 import Schedule from "./Schedule";
 
 function Home({userId}) {
@@ -19,13 +15,15 @@ function Home({userId}) {
         avg_spoons: 0
     }
     const [user, setUser] = useState(initialState);
+    const [settings, setSettings] = useState('');
     
     useEffect(() => {
         const abortController = new AbortController();
         async function getUser() {
             try {
                 const response = await readUser(userId, abortController.signal);
-                setUser(() => response);
+                setUser(response);
+                setSettings(response.settings);
             } catch(error) {
                 if(error.name !== "AbortError") {
                     throw error;
@@ -36,31 +34,11 @@ function Home({userId}) {
         return () => {
             abortController.abort();
         }
-    }, [user, userId]);
+    }, [userId]);
 
     return (
         <div>
-            <Navbar collapseOnSelect expand="sm" bg="primary" variant="dark">
-                <Container className="d-flex justify-content-center">
-                    <Navbar.Brand href="/">Spoon Scheduler</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className= "me-auto">
-                            <NavDropdown title="View" id="view-dropdown" >
-                                <NavDropdown.Item>
-                                    <Stack>
-                                        <Button className="d-flex justify-content-center mb-2" variant="outline-primary">1-day</Button>
-                                        <Button className="d-flex justify-content-center mb-2" variant="outline-primary">3-day</Button>
-                                        <Button className="d-flex justify-content-center mb-2" variant="outline-primary">Week</Button>
-                                        <Button className="d-flex justify-content-center" variant="outline-primary">Month</Button>
-                                    </Stack>
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                            <Nav.Link href="addEvent">+ Add New Event</Nav.Link>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
+            <Navigation setSettings={setSettings}/>
             <Switch>
                 <Route path={`/${user.user_id}/:date/:eventId/editEvent`}>
                     <EventForm mode="edit" userId={user} />
@@ -69,13 +47,16 @@ function Home({userId}) {
                     <Event />
                 </Route>
                 <Route path={`/${user.user_id}/:date`}>
-                    <Schedule mode="day" />
+                    <Schedule mode="1-day" user={user} />
+                </Route>
+                <Route exact path="/addDay">
+                    <DayForm mode="create" user={user} />
                 </Route>
                 <Route exact path="/addEvent">
                     <EventForm mode="create" user={user} />
                 </Route>
                 <Route exact path="/">
-                    <Schedule mode={user.settings} />
+                    <Schedule mode={settings} user={user} />
                 </Route>
                 <Route>
                     <div className="d-flex justify-content-center">
