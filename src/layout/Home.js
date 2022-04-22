@@ -2,20 +2,22 @@ import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { readUser } from "../utils/api/index";
 import DayForm from "./DayForm";
+import DayView from "./DayView";
 import Event from "./Event";
 import EventForm from "./EventForm";
 import Navigation from "./Navigation";
 import Schedule from "./Schedule";
 
-function Home({userId}) {
+function Home({userId, setToken}) {
     const initialState = {
         user_id: userId,
         username: '',
         settings: '',
-        avg_spoons: 0
+        avg_spoons: 0,
+        days: []
     }
     const [user, setUser] = useState(initialState);
-    const [settings, setSettings] = useState('');
+    const [settings, setSettings] = useState('3-day');
     
     useEffect(() => {
         const abortController = new AbortController();
@@ -38,25 +40,25 @@ function Home({userId}) {
 
     return (
         <div>
-            <Navigation setSettings={setSettings}/>
+            <Navigation setSettings={setSettings} setToken={setToken} />
             <Switch>
-                <Route path={`/${user.user_id}/:date/:eventId/editEvent`}>
+                <Route path={`/:date/:eventId/editEvent`}>
                     <EventForm mode="edit" userId={user} />
                 </Route>
-                <Route path={`/${user.user_id}/:date/:eventId`}>
-                    <Event />
+                <Route path="/:date/addEvent">
+                    <EventForm mode="create" user={user} />
                 </Route>
-                <Route path={`/${user.user_id}/:date`}>
-                    <Schedule mode="1-day" user={user} />
+                <Route path={`/:date/:eventId`}>
+                    <Event />
                 </Route>
                 <Route exact path="/addDay">
                     <DayForm mode="create" user={user} />
                 </Route>
-                <Route exact path="/addEvent">
-                    <EventForm mode="create" user={user} />
+                <Route path={`/:date`}>
+                    <DayView />
                 </Route>
                 <Route exact path="/">
-                    <Schedule mode={settings} user={user} />
+                    <Schedule mode={settings} user={user} setSettings={setSettings} />
                 </Route>
                 <Route>
                     <div className="d-flex justify-content-center">

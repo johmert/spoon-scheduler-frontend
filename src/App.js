@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Home userId={token.user_id} />
+        <Home userId={token.user_id} setToken={setToken} />
       </div>
     </Router>
   );

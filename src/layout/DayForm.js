@@ -62,7 +62,13 @@ function DayForm({mode, user}) {
             history.push("/");
             window.location.reload(false);
         } else if(mode === 'create') {
-            await createDay(newDay, user.user_id, abortController.signal);
+            try {
+                await createDay(newDay, user.user_id, abortController.signal);
+            } catch(error) {
+                if(error.name !== "AbortError") {
+                    throw error;
+                }
+            }
             history.push("/");
             window.location.reload(false);
         }

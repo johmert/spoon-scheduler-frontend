@@ -72,7 +72,7 @@ function EventForm({mode, user}) {
             spoons: form.spoons,
             timeDuration: form.timeDuration,
             importance: form.importance,
-            date: form.date
+            date: date
         }
         if(mode === 'edit') {
             newEvent.event_id = event.event_id;
@@ -117,8 +117,6 @@ function EventForm({mode, user}) {
                 </Form.Group>
                 <Form.Label>Description: </Form.Label>
                 <Form.Control className="mb-3" as="textarea" rows={4} onChange={e => setForm({...form, description: e.target.value})} />
-                <Form.Label>Date:</Form.Label>
-                <Form.Control className="mb-3" type="date" onChange={e => setForm({...form, date: e.target.value})} />
                 <Form.Label>Duration: </Form.Label>
                 <Form.Check className="mb-3" type="switch" label="All-day" onChange={() => {setDisabled(!disabled); setForm({...form, timeDuration: 1440 })}} />
                 <Stack className="mb-3" direction="horizontal">

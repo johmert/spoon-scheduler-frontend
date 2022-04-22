@@ -1,12 +1,13 @@
 import React from "react";
+import { useHistory } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import Stack from "react-bootstrap/Stack";
 
-function Navigation({setSettings}) {
+function Navigation({setToken}) {
+    const history = useHistory();
+
     return (<>
     <Navbar collapseOnSelect expand="sm" bg="primary" variant="dark">
                 <Container className="d-flex justify-content-center">
@@ -14,29 +15,8 @@ function Navigation({setSettings}) {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className= "me-auto">
-                            <NavDropdown title="View" id="view-dropdown" >
-                                <NavDropdown.Item>
-                                    <Stack>
-                                        <Button 
-                                            className="d-flex justify-content-center mb-2" 
-                                            variant="outline-primary"
-                                            onClick={() => setSettings('1-day')}>1-day</Button>
-                                        <Button 
-                                            className="d-flex justify-content-center mb-2" 
-                                            variant="outline-primary"
-                                            onClick={() => setSettings('3-day')}>3-day</Button>
-                                        <Button 
-                                            className="d-flex justify-content-center mb-2" 
-                                            variant="outline-primary"
-                                            onClick={() => setSettings('week')}>Week</Button>
-                                        <Button 
-                                            className="d-flex justify-content-center" 
-                                            variant="outline-primary"
-                                            onClick={() => setSettings('month')}>Month</Button>
-                                    </Stack>
-                                </NavDropdown.Item>
-                            </NavDropdown>
-                            <Nav.Link href="addDay"> + Add New Day</Nav.Link>
+                            <Button className="m-2" variant="primary" onClick={() => { history.push("/addDay"); window.location.reload(false); }}> + Add New Day</Button>
+                            <Button className="m-2" variant="danger" onClick={() => setToken('')}>Log Out</Button>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

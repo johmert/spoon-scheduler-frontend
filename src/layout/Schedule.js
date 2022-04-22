@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import Day from "./Day";
+import ViewDropdown from "./ViewDropdown";
 
-function Schedule({mode, user}) {
+function Schedule({mode, user, setSettings}) {
     const initialState = [{
-        date: '',
+        date: '2022-01-01',
         day_left: 0,
-        events: [{}],
+        events: [],
         max_spoons: 0,
         user_id: user.user_id
     }];
@@ -14,10 +15,7 @@ function Schedule({mode, user}) {
 
     useEffect(() => {
         if(user.days){
-            console.log(user.days.splice(1));
-            if(mode === "1-day") setDays(user.days.splice(1));
-            if(mode === "3-day") setDays(user.days.splice(3));
-            if(mode === "week") setDays(user.days.splice(7));
+            setDays(user.days.sort())
         }
     }, [mode, user.days]);
 
@@ -26,6 +24,7 @@ function Schedule({mode, user}) {
 
     return (
         <Container>
+            <ViewDropdown setSettings={setSettings} />
             {daysListed}
         </Container>
     );

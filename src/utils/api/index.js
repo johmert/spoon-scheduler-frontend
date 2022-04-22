@@ -35,7 +35,7 @@ export async function createDay(day, userId, signal) {
 
 export async function createEvent(event, userId, signal) {
     const { date } = event;
-    const url = `${API_BASE_URL}/users/${userId}/days/${date}`;
+    const url = `${API_BASE_URL}/users/${userId}/days/${date}/events`;
     const options = {
         method: 'POST',
         headers,
