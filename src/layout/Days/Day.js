@@ -5,7 +5,7 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
-import { readDay } from "../utils/api";
+import { readDay } from "../../utils/api";
 
 function Day({ d, user }) {
     const { user_id } = user;

@@ -6,8 +6,8 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
-import { createEvent, readEvent, updateEvent } from "../utils/api";
-import SpoonToast from "./SpoonToast";
+import { createEvent, readEvent, updateEvent } from "../../utils/api";
+import SpoonToast from "../../utils/SpoonToast";
 
 
 function EventForm({mode, user}) {

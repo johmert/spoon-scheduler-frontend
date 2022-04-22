@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { readUser } from "../utils/api/index";
-import DayForm from "./DayForm";
-import DayView from "./DayView";
-import Event from "./Event";
-import EventForm from "./EventForm";
-import Navigation from "./Navigation";
+import DayForm from "./Days/DayForm";
+import DayView from "./Days/DayView";
+import Event from "./Events/Event";
+import EventForm from "./Events/EventForm";
+import Navigation from "../utils/Navigation";
 import Schedule from "./Schedule";
 
 function Home({userId, setToken}) {

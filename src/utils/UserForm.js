@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createUser, loginUser } from "../utils/api/index"
+import { createUser, loginUser } from "./api/index"
 import Button from "react-bootstrap/Button"
 import Container from "react-bootstrap/Container"
 import Form from "react-bootstrap/Form"

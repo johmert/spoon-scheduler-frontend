@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-import Day from "./Day";
-import ViewDropdown from "./ViewDropdown";
+import Day from "./Days/Day";
+import ViewDropdown from "../utils/ViewDropdown";
 
 function Schedule({mode, user, setSettings}) {
     const initialState = [{

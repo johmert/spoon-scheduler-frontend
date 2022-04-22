@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-import { readEvent } from "../utils/api";
+import { readEvent } from "../../utils/api";
 
 function Event({ date, id, userId }) {
   const initialState = {
