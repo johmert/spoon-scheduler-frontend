@@ -9,8 +9,11 @@ import { readDay } from "../../utils/api";
 
 function Day({ d, user }) {
     const { user_id } = user;
+    let formatedDate = d.split("");
+        formatedDate.splice(10);
+        formatedDate = formatedDate.join("");
     const initialState = {
-        date: d,
+        date: formatedDate,
         day_left: 0,
         events: [],
         max_spoons: 0,
@@ -18,19 +21,18 @@ function Day({ d, user }) {
     };
     const [day, setDay] = useState(initialState);
     const [spoons, setSpoons] = useState(0);
-    let { date, day_left, events, max_spoons } = day;
+    const { day_left, events, max_spoons } = day;
     const history = useHistory();
-    date = date.split("");
-    date.splice(10);
-    date = date.join("");
+    const numberOfEvents = events.length;
+    
 
     useEffect(() => {
         const abortController = new AbortController();
         async function getDay() {
             try {
-                const response = await readDay(d, user_id, abortController.signal);
+                const response = await readDay(formatedDate, user_id, abortController.signal);
                 setDay(response);
-                if(response.events.length > 0) {
+                if(response.events && response.events.length > 0) {
                     const eventSpoons = response.events.map(event => event.spoons);
                     const totalSpoons = eventSpoons.reduce((prev, current) => prev + current, 0);
                     setSpoons(totalSpoons);
@@ -45,10 +47,10 @@ function Day({ d, user }) {
         return () => {
             abortController.abort();
         }
-    }, [d, user_id]);
+    }, [formatedDate, user_id]);
 
     return (
-        <Container>
+        <Container className="mb-4">
             <Row>
                 <Col className="h6 text-center">Date</Col>
                 <Col className="h6 text-center">Available Time</Col>
@@ -56,29 +58,33 @@ function Day({ d, user }) {
                 <Col className="h6 text-center">Scheduled Spoons</Col>
                 <Col className="h6 text-center">Maximum Spoons</Col>
             </Row>
-            <Row>
-                <Col className="text-center">{date}</Col>
+            <Row className="d-flex flex-wrap">
+                <Col className="text-center">{formatedDate}</Col>
                 <Col className="text-center">{day_left}</Col>
-                <Col className="text-center">{events.length}</Col>
+                <Col className="text-center">{numberOfEvents}</Col>
                 <Col className="text-center">{spoons}</Col>
                 <Col className="text-center">{max_spoons}</Col>
                 <Stack className="d-flex justify-content-end" direction="horizontal">
                     <Button
                         className="m-1" 
                         variant="outline-primary" 
-                        onClick={() => { history.push(`/${date}`); window.location.reload(false); }}>
+                        onClick={() => { history.push(`/${formatedDate}`); window.location.reload(false); }}>
                         View
+                    </Button>
+                    <Button
+                        className="m-1" 
+                        variant="info" 
+                        onClick={() => { history.push(`/${formatedDate}/editDay`); window.location.reload(false); }}>
+                        Edit
                     </Button>
                     <Button
                         className="m-1"
                         variant="primary"
-                        onClick={() => { history.push(`/${date}/addEvent`); window.location.reload(false); }}>
+                        onClick={() => { history.push(`/${formatedDate}/addEvent`); window.location.reload(false); }}>
                         Add Event
                     </Button>
                 </Stack>
-                
             </Row>
-            
         </Container>
     );
 

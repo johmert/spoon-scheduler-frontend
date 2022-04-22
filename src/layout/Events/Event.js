@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 import { readEvent } from "../../utils/api";
 
-function Event({ date, id, userId }) {
+function Event({ d, id, user }) {
+  const { user_id } = user;
   const initialState = {
     name: "",
     description: "",
@@ -13,6 +17,7 @@ function Event({ date, id, userId }) {
     event_id: id,
   };
   const [event, setEvent] = useState(initialState);
+  const { date } = useParams();
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -21,7 +26,7 @@ function Event({ date, id, userId }) {
         const response = await readEvent(
           date,
           id,
-          userId,
+          user_id,
           abortController.signal
         );
         setEvent(response);
@@ -35,11 +40,22 @@ function Event({ date, id, userId }) {
     return () => {
       abortController.abort();
     };
-  }, [date, id, userId]);
+  }, [date, id, user_id]);
 
   return (
     <Container>
-      <p className="h2">{event.spoons}</p>
+      <Row>
+        <Col>Name</Col>
+        <Col>Important?</Col>
+        <Col>Duration</Col>
+        <Col># of Spoons</Col>
+      </Row>
+      <Row>
+        <Col>{event.name}</Col>
+        <Col>{event.importance}</Col>
+        <Col>{event.timeDuration}</Col>
+        <Col>{event.spoons}</Col>
+      </Row>
     </Container>
   );
 }

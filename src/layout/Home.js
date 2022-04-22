@@ -3,8 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import { readUser } from "../utils/api/index";
 import DayForm from "./Days/DayForm";
 import DayView from "./Days/DayView";
-import Event from "./Events/Event";
-import EventForm from "./Events/EventForm";
+import EventForm from "./Events/Event";
 import Navigation from "../utils/Navigation";
 import Schedule from "./Schedule";
 
@@ -16,8 +15,9 @@ function Home({userId, setToken}) {
         avg_spoons: 0,
         days: []
     }
-    const [user, setUser] = useState(initialState);
     const [settings, setSettings] = useState('3-day');
+    const [user, setUser] = useState(initialState);
+    
     
     useEffect(() => {
         const abortController = new AbortController();
@@ -42,20 +42,17 @@ function Home({userId, setToken}) {
         <div>
             <Navigation setSettings={setSettings} setToken={setToken} />
             <Switch>
-                <Route path={`/:date/:eventId/editEvent`}>
-                    <EventForm mode="edit" userId={user} />
-                </Route>
-                <Route path="/:date/addEvent">
+                <Route exact path={`/:date/addEvent`}>
                     <EventForm mode="create" user={user} />
-                </Route>
-                <Route path={`/:date/:eventId`}>
-                    <Event />
+                </Route>  
+                <Route exact path={`/:date/editDay`}>
+                    <DayForm mode="edit" user={user} />
                 </Route>
                 <Route exact path="/addDay">
                     <DayForm mode="create" user={user} />
                 </Route>
-                <Route path={`/:date`}>
-                    <DayView />
+                <Route exact path={`/:date`}>
+                    <DayView user={user} />
                 </Route>
                 <Route exact path="/">
                     <Schedule mode={settings} user={user} setSettings={setSettings} />
