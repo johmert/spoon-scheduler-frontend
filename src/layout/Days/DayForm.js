@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { createDay, readDay, updateDay } from "../../utils/api";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 
-function DayForm({mode, user}) {
+function DayForm({mode, user, date}) {
     const { avg_spoons, user_id } = user;
-    const { date } = useParams();
     let formatedDate = date;
     if( date ) { 
         formatedDate = formatedDate.split("");

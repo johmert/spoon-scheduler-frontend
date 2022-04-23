@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-import Day from "./Days/Day";
+import DayPreview from "./Days/DayPreview";
 import ViewDropdown from "../utils/ViewDropdown";
 
 function Schedule({mode, user, setSettings}) {
@@ -32,7 +32,7 @@ function Schedule({mode, user, setSettings}) {
         }
     }, [mode, user.days]);
 
-    const daysListed = days.map((day, key) => <Day key={key} d={day.date} user={user} />);
+    const daysListed = days.map((day, key) => <DayPreview key={key} d={day.date} user={user} />);
 
     return (
         <Container>

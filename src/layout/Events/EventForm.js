@@ -10,32 +10,31 @@ import { createEvent, readEvent, updateEvent } from "../../utils/api";
 import SpoonToast from "../../utils/SpoonToast";
 
 
-function EventForm({mode, user}) {
+function EventForm({date, mode, user}) {
     const initialState = {
         name: '',
         description: '',
         spoons: 0,
-        timeDuration: 0,
+        timeDuration: 1440,
         importance: 0,
-        date: '',
-        event_id: null,
     }
     const [disabled, setDisabled] = useState(false);
     const [event, setEvent] = useState(initialState);
-    const [form, setForm] = useState();
+    const [form, setForm] = useState(initialState);
     const [hours, setHours] = useState(0);
+    const [important, setImportance] = useState(false);
     const [minutes, setMinutes] = useState(0);
     const [spoonValue, setSpoonValue] = useState(0);
     const abortController = new AbortController();
     const history = useHistory();
-    const { date, eventId } = useParams();
-    const userId = user.user_id;
+    const { eventId } = useParams();
+    const { user_id }= user;
 
     useEffect(() => {
         async function getEvent() {
             if(mode === "create") return;
             try {
-                const response = await readEvent(date, eventId, userId, abortController.signal);
+                const response = await readEvent(date, eventId, user_id, abortController.signal);
                 setEvent(response);
                 setForm({ 
                     name: response.name, 
@@ -56,12 +55,22 @@ function EventForm({mode, user}) {
             abortController.abort();
         };
         // eslint-disable-next-line
-    }, [mode, date, eventId, userId]);
+    }, [mode, date, eventId, user_id]);
 
-    function handleImportance(e) {
-        e.target.value === 'on' ?
-            setForm({...form, importance: 1 }) :
-            setForm({...form, importance: 0 });
+    function handleAllDaySwitch() {
+        setDisabled(!disabled);
+        disabled === false ?
+        setForm({...form, timeDuration: hours+minutes }) :
+        setForm({...form, timeDuration: 1440 });
+        console.log(form.timeDuration)
+    }
+
+    function handleImportance() {
+        setImportance(!important);
+        important ? 
+        setForm({...form, importance: 1 }) :
+        setForm({...form, importance: 0 });
+        console.log(form.importance)
     }
 
     async function handleSubmit(e) {
@@ -76,11 +85,20 @@ function EventForm({mode, user}) {
         }
         if(mode === 'edit') {
             newEvent.event_id = event.event_id;
-            await updateEvent(newEvent, userId, abortController.signal);
+            await updateEvent(newEvent, user_id, abortController.signal);
             history.push("/");
+            window.location.reload(false);
         } else if(mode === 'create') {
-            await createEvent(newEvent, userId, abortController.signal);
+            console.log(newEvent)
+            try {
+                await createEvent(newEvent, user_id, abortController.signal);
+            } catch (error) {
+                if(error.name !== "AbortError"){
+                    throw error;
+                }
+            }
             history.push("/");
+            window.location.reload(false);
         }
         
     }
@@ -104,7 +122,7 @@ function EventForm({mode, user}) {
                 <Form.Control className="mb-3" type="text" onChange={e => setForm({...form, name: e.target.value})} />
                 <div className="d-flex justify-content-between">
                     <SpoonToast />
-                    <Form.Check className="mb-3" type="switch" label="Important" onChange={e => handleImportance(e)} /> 
+                    <Form.Check className="mb-3" type="switch" label="Important" onChange={handleImportance} /> 
                 </div>
                 <Form.Label>Spoons: </Form.Label>
                 <Form.Group as={Row}>
@@ -118,7 +136,7 @@ function EventForm({mode, user}) {
                 <Form.Label>Description: </Form.Label>
                 <Form.Control className="mb-3" as="textarea" rows={4} onChange={e => setForm({...form, description: e.target.value})} />
                 <Form.Label>Duration: </Form.Label>
-                <Form.Check className="mb-3" type="switch" label="All-day" onChange={() => {setDisabled(!disabled); setForm({...form, timeDuration: 1440 })}} />
+                <Form.Check className="mb-3" type="switch" label="All-day" onChange={() => handleAllDaySwitch()} />
                 <Stack className="mb-3" direction="horizontal">
                     <Form.Select size="sm" className="m-2" disabled={disabled} onChange={e => handleTimeDurationChange(e, 'hours')}>
                         <option className="text-center">Hours</option>
@@ -156,7 +174,7 @@ function EventForm({mode, user}) {
                 </Stack>
                 <Stack className="d-flex justify-content-center mb-3">
                     <Button className="mb-3" type="submit">Submit</Button>
-                    <Button variant="outline-primary" onClick={() => history.goBack()}>Cancel</Button>
+                    <Button variant="outline-danger" onClick={() => history.goBack()}>Cancel</Button>
                 </Stack>
             </Form>
         </Container>

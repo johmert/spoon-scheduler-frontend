@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { readDay } from "../../utils/api";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -8,7 +8,7 @@ import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 import Event from "../Events/Event";
 
-function DayView({user}) {
+function DayView({date, user}) {
     const { user_id } = user;
     const initialDayState = {
         date: '',
@@ -28,15 +28,15 @@ function DayView({user}) {
     const [day, setDay] = useState(initialDayState)
     const [events, setEvents] = useState(initialEventsState);
     const [totalSpoons, setTotalSpoons] = useState(0);
-    const { date } = useParams();
-    const abortController = new AbortController();
+    
     const history = useHistory();
 
     useEffect(() => {
+        const abortController = new AbortController();
         async function getDay() {
             try{
                 const response = await readDay(date, user_id, abortController.signal)
-                setDay(response);
+                setDay(() => response);
             } catch (error) {
                 if(error.name !== "AbortError"){
                     throw error;
@@ -53,8 +53,8 @@ function DayView({user}) {
         return () => {
             abortController.abort();
         }
-        // eslint-disable-next-line
-    }, [date, user_id])
+
+    }, [day.events, date, events, user_id])
 
     const eventsListed = events.map((event, key) => <Event key={key} id={event.event_id} d={date} user={user} />);
     
@@ -62,26 +62,37 @@ function DayView({user}) {
     return (
         <Container>
             <Row className="mt-2">
+                <Col className="d-flex justify-content-end">
+                    <Button
+                        className="m-1" 
+                        variant="info" 
+                        onClick={() => { history.push(`/days/${date}/edit`); window.location.reload(false); }}>
+                        Edit
+                    </Button>
+                </Col>
+            </Row>
+            <Row className="mb-3">
                 <Col className="h2 text-center">{date}</Col>
             </Row>
             <Row>
                 <Col className="text-center">Available Time</Col>
                 <Col className="text-center">Scheduled Spoons /</Col>
                 <Col className="text-center">Maximum Spoons</Col>
-                <Col></Col>
             </Row>
             <Row>
                 <Col className="m-2 text-center">{day.day_left}</Col>
                 <Col className="m-2 text-center">{totalSpoons}</Col>
                 <Col className="m-2 text-center">{day.max_spoons}</Col>
-                <Col className="d-flex justify-content-end">
+            </Row>
+            <Row>
+                <Stack>
                     <Button 
-                        className="m-2" 
+                        className="m-3" 
                         variant="primary"
-                        onClick={() => history.push(`${date}/addEvent`)}>
+                        onClick={() =>{ history.push(`/days/${date}/events/add`); window.location.reload(false); }}>
                         + Add Event
                     </Button>
-                </Col>
+                </Stack>
             </Row>
             <Stack>{eventsListed}</Stack>
         </Container>

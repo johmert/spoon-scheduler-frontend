@@ -15,7 +15,7 @@ function Navigation({setToken}) {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className= "me-auto">
-                            <Button className="m-2" variant="primary" onClick={() => { history.push("/addDay"); window.location.reload(false); }}> + Add New Day</Button>
+                            <Button className="m-2" variant="primary" onClick={() => { history.push("/days/add"); window.location.reload(false); }}> + Add New Day</Button>
                             <Button className="m-2" variant="danger" onClick={() => setToken('')}>Log Out</Button>
                         </Nav>
                     </Navbar.Collapse>

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
 import { readUser } from "../utils/api/index";
+import Container from "react-bootstrap/Container";
+import Day from "./Days/Day";
 import DayForm from "./Days/DayForm";
-import DayView from "./Days/DayView";
-import EventForm from "./Events/Event";
 import Navigation from "../utils/Navigation";
+import NotFound from "../utils/NotFound";
 import Schedule from "./Schedule";
 
 function Home({userId, setToken}) {
@@ -39,31 +40,25 @@ function Home({userId, setToken}) {
     }, [userId]);
 
     return (
-        <div>
+        <>
             <Navigation setSettings={setSettings} setToken={setToken} />
-            <Switch>
-                <Route exact path={`/:date/addEvent`}>
-                    <EventForm mode="create" user={user} />
-                </Route>  
-                <Route exact path={`/:date/editDay`}>
-                    <DayForm mode="edit" user={user} />
-                </Route>
-                <Route exact path="/addDay">
-                    <DayForm mode="create" user={user} />
-                </Route>
-                <Route exact path={`/:date`}>
-                    <DayView user={user} />
-                </Route>
-                <Route exact path="/">
-                    <Schedule mode={settings} user={user} setSettings={setSettings} />
-                </Route>
-                <Route>
-                    <div className="d-flex justify-content-center">
-                        <p className="h2">Page Not Found!</p>
-                    </div>
-                </Route>
-            </Switch>
-        </div>
+            <Container>
+                <Switch>
+                    <Route exact path="/days/add">
+                        <DayForm mode="create" user={user} />
+                    </Route>
+                    <Route path={`/days/:date`}>
+                        <Day user={user} />
+                    </Route>
+                    <Route exact path="/">
+                        <Schedule mode={settings} user={user} setSettings={setSettings} />
+                    </Route>
+                    <Route>
+                        <NotFound />
+                    </Route>
+                </Switch>
+            </Container>
+        </>
     )
 }
 

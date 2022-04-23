@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
@@ -17,14 +16,13 @@ function Event({ d, id, user }) {
     event_id: id,
   };
   const [event, setEvent] = useState(initialState);
-  const { date } = useParams();
 
   useEffect(() => {
     const abortController = new AbortController();
     async function getEvent() {
       try {
         const response = await readEvent(
-          date,
+          d,
           id,
           user_id,
           abortController.signal
@@ -40,7 +38,7 @@ function Event({ d, id, user }) {
     return () => {
       abortController.abort();
     };
-  }, [date, id, user_id]);
+  }, [d, id, user_id]);
 
   return (
     <Container>
