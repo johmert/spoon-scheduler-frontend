@@ -24,10 +24,10 @@ function DayForm({mode, user, date}) {
     };
     const [day, setDay] = useState(initialStateDay);
     const [form, setForm] = useState({ date: '', max_spoons: avg_spoons *2 });
-    const abortController = new AbortController();
     const history = useHistory();
 
     useEffect(() => {
+        const abortController = new AbortController();
         const initialState = {
             date: '',
             max_spoons: avg_spoons * 2,
@@ -50,10 +50,11 @@ function DayForm({mode, user, date}) {
         return () => {
             abortController.abort();
         }
-        // eslint-disable-next-line
+        
     }, [avg_spoons, formatedDate, mode, user_id]);
 
     async function handleSubmit(e) {
+        const abortController2 = new AbortController();
         e.preventDefault();
         let newDay = {
             date: form.date,
@@ -64,7 +65,7 @@ function DayForm({mode, user, date}) {
         }
         if(mode === 'edit') {
             try {
-                await updateDay(newDay, user_id, abortController.signal);
+                await updateDay(newDay, user_id, abortController2.signal);
             } catch(error) {
                 if(error.name !== "AbortError") {
                     throw error;
@@ -74,7 +75,7 @@ function DayForm({mode, user, date}) {
             window.location.reload(false);
         } else if(mode === 'create') {
             try {
-                await createDay(newDay, user_id, abortController.signal);
+                await createDay(newDay, user_id, abortController2.signal);
             } catch(error) {
                 if(error.name !== "AbortError") {
                     throw error;

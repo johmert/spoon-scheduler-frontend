@@ -3,18 +3,10 @@ import Container from "react-bootstrap/Container";
 import DayPreview from "./Days/DayPreview";
 import ViewDropdown from "../utils/ViewDropdown";
 
-function Schedule({mode, user, setSettings}) {
-    const initialState = [{
-        date: '2022-01-01',
-        day_left: 0,
-        events: [],
-        max_spoons: 0,
-        user_id: user.user_id
-    }];
-    const [days, setDays] = useState(initialState);
+function Schedule({days, mode, user, setSettings}) {
 
     useEffect(() => {
-        if(user.days){
+        if(days){
             const compare = (day1, day2) => {
                 let formatedDate1 = day1.date
                     formatedDate1 = formatedDate1.split("");
@@ -28,11 +20,11 @@ function Schedule({mode, user, setSettings}) {
                 if(formatedDate1 > formatedDate2) return 1;
                 if(formatedDate1 === formatedDate2) return 0;
             }
-            setDays(user.days.sort(compare));
+            days.sort(compare);
         }
-    }, [mode, user.days]);
+    }, [mode, days]);
 
-    const daysListed = days.map((day, key) => <DayPreview key={key} d={day.date} user={user} />);
+    const daysListed = days.map((day, key) => <DayPreview key={key} day={day} />);
 
     return (
         <Container>

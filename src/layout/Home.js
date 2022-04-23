@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Route, Switch } from "react-router-dom";
-import { readUser } from "../utils/api/index";
+import { listDays, readUser } from "../utils/api/index";
 import Container from "react-bootstrap/Container";
 import Day from "./Days/Day";
 import DayForm from "./Days/DayForm";
@@ -16,6 +16,7 @@ function Home({userId, setToken}) {
         avg_spoons: 0,
         days: []
     }
+    const [days, setDays] = useState([]);
     const [settings, setSettings] = useState('3-day');
     const [user, setUser] = useState(initialState);
     
@@ -28,12 +29,19 @@ function Home({userId, setToken}) {
                 setUser(response);
                 setSettings(response.settings);
             } catch(error) {
-                if(error.name !== "AbortError") {
-                    throw error;
-                }
+                if(error.name !== "AbortError") throw error;
+            }
+        }
+        async function getDays() {
+            try {
+                const response = await listDays(userId, abortController.signal);
+                setDays(() => response.data);
+            } catch(error) {
+                if(error.name !== "AbortError") throw error;
             }
         }
         getUser();
+        getDays();
         return () => {
             abortController.abort();
         }
@@ -48,10 +56,10 @@ function Home({userId, setToken}) {
                         <DayForm mode="create" user={user} />
                     </Route>
                     <Route path={`/days/:date`}>
-                        <Day user={user} />
+                        <Day days={days} user={user} />
                     </Route>
                     <Route exact path="/">
-                        <Schedule mode={settings} user={user} setSettings={setSettings} />
+                        <Schedule days={days} mode={settings} user={user} setSettings={setSettings} />
                     </Route>
                     <Route>
                         <NotFound />

@@ -65,6 +65,15 @@ export async function deleteEvent(date, eventId, userId, signal) {
     });
 }
 
+export async function listDays(userId, signal) {
+    const url = `${API_BASE_URL}/users/${userId}/days`;
+    return await fetch(url, {
+        method: 'GET',
+        headers,
+        signal
+    }).then(data => data.json());
+}
+
 export async function loginUser(credentials, signal) {
     const url = `${API_BASE_URL}/login`;
     const options = {
