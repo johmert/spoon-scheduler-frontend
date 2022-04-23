@@ -1,58 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useHistory } from "react-router-dom";
+import { deleteEvent } from "../../utils/api";
+import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import { readEvent } from "../../utils/api";
+import Stack from "react-bootstrap/Stack";
 
-function Event({ d, id, user }) {
-  const { user_id } = user;
-  const initialState = {
-    name: "",
-    description: "",
-    spoons: 0,
-    timeDuration: 0,
-    importance: 0,
-    date: "",
-    event_id: id,
-  };
-  const [event, setEvent] = useState(initialState);
+function Event({ date, event, user_id }) {
+  const { event_id, name, importance, timeDuration, spoons } = event;
+  const abortController = new AbortController();
+  const history = useHistory();
+  let formatedDate = date;
+  if( date ) { 
+      formatedDate = formatedDate.split("");
+      formatedDate.splice(10);
+      formatedDate = formatedDate.join("");
+  }
 
-  useEffect(() => {
-    const abortController = new AbortController();
-    async function getEvent() {
-      try {
-        const response = await readEvent(
-          d,
-          id,
-          user_id,
-          abortController.signal
-        );
-        setEvent(response);
-      } catch (error) {
-        if (error.name !== "AbortError") {
-          throw error;
-        }
-      }
-    }
-    getEvent();
-    return () => {
-      abortController.abort();
-    };
-  }, [d, id, user_id]);
+  async function handleDelete() {
+    await deleteEvent(formatedDate, event_id, user_id, abortController.signal);
+    history.push(`/days/${formatedDate}/`);
+    window.location.reload(false);
+  }
 
   return (
-    <Container>
+    <Container className="mb-4 mt-4">
       <Row>
-        <Col>Name</Col>
-        <Col>Important?</Col>
-        <Col>Duration</Col>
-        <Col># of Spoons</Col>
+        <Col>{name}</Col>
+        <Col>{importance}</Col>
+        <Col>{timeDuration}</Col>
+        <Col>{spoons}</Col>
       </Row>
-      <Row>
-        <Col>{event.name}</Col>
-        <Col>{event.importance}</Col>
-        <Col>{event.timeDuration}</Col>
-        <Col>{event.spoons}</Col>
+      <Row >
+        <Stack className="d-flex justify-content-end mt-2" direction="horizontal">
+          <Button 
+            className="m-1" 
+            variant="primary"
+            onClick={() => { history.push(`/days/${formatedDate}/events/${event_id}`); window.location.reload(false); }}>
+            View
+          </Button>
+          <Button 
+            className="m-1" 
+            variant="info"
+            onClick={() => { history.push(`/days/${formatedDate}/events/${event_id}/edit`); window.location.reload(false); }}>
+            Edit
+          </Button>
+          <Button 
+            className="m-1" 
+            variant="danger"
+            onClick={handleDelete}>
+            X Delete
+          </Button>
+        </Stack>
       </Row>
     </Container>
   );

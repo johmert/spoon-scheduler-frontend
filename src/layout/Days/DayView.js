@@ -13,7 +13,7 @@ function DayView({date, user}) {
     const initialDayState = {
         date: '',
         day_left: 0,
-        events: [],
+        events: [{}],
         max_spoons: 0,
         user_id: user_id
     }
@@ -36,7 +36,7 @@ function DayView({date, user}) {
         async function getDay() {
             try{
                 const response = await readDay(date, user_id, abortController.signal)
-                setDay(() => response);
+                setDay(response);
             } catch (error) {
                 if(error.name !== "AbortError"){
                     throw error;
@@ -56,7 +56,20 @@ function DayView({date, user}) {
 
     }, [day.events, date, events, user_id])
 
-    const eventsListed = events.map((event, key) => <Event key={key} id={event.event_id} d={date} user={user} />);
+    const eventsListed = events.map((event, key) => 
+        <Container key={key}>
+            <Row className="mt-4">
+                <Col className="h6">Name</Col>
+                <Col className="h6">Important?</Col>
+                <Col className="h6">Duration</Col>
+                <Col className="h6"># of Spoons</Col>
+            </Row>
+            <Row>
+                <Event date={day.date} event={event} user_id={user_id} />
+            </Row>
+        </Container>
+        
+    );
     
 
     return (
@@ -76,12 +89,14 @@ function DayView({date, user}) {
             </Row>
             <Row>
                 <Col className="text-center">Available Time</Col>
-                <Col className="text-center">Scheduled Spoons /</Col>
+                <Col className="text-center">Scheduled Spoons</Col>
+                <Col size="sm"></Col>
                 <Col className="text-center">Maximum Spoons</Col>
             </Row>
             <Row>
                 <Col className="m-2 text-center">{day.day_left}</Col>
                 <Col className="m-2 text-center">{totalSpoons}</Col>
+                <Col className="m-2 text-center" size="sm">/</Col>
                 <Col className="m-2 text-center">{day.max_spoons}</Col>
             </Row>
             <Row>
@@ -94,7 +109,7 @@ function DayView({date, user}) {
                     </Button>
                 </Stack>
             </Row>
-            <Stack>{eventsListed}</Stack>
+            {eventsListed}
         </Container>
     );
 }

@@ -23,7 +23,7 @@ function Day({ d, user }) {
     const [spoons, setSpoons] = useState(0);
     const { day_left, events, max_spoons } = day;
     const history = useHistory();
-    const numberOfEvents = events.length;
+    const numberOfEvents = events ? events.length : 0;
     
 
     useEffect(() => {
@@ -32,10 +32,12 @@ function Day({ d, user }) {
             try {
                 const response = await readDay(formatedDate, user_id, abortController.signal);
                 setDay(response);
-                if(response.events && response.events.length > 0) {
-                    const eventSpoons = response.events.map(event => event.spoons);
-                    const totalSpoons = eventSpoons.reduce((prev, current) => prev + current, 0);
-                    setSpoons(totalSpoons);
+                if(response.events) {
+                    if(response.events.length > 0) {
+                        const eventSpoons = response.events.map(event => event.spoons);
+                        const totalSpoons = eventSpoons.reduce((prev, current) => prev + current, 0);
+                        setSpoons(totalSpoons);
+                    }
                 }
             } catch (error) {
                 if(error.name !== "AbortError") {
@@ -67,7 +69,7 @@ function Day({ d, user }) {
                 <Stack className="d-flex justify-content-end" direction="horizontal">
                     <Button
                         className="m-1" 
-                        variant="outline-primary" 
+                        variant="primary" 
                         onClick={() => { history.push(`/days/${formatedDate}`); window.location.reload(false); }}>
                         View
                     </Button>
@@ -76,12 +78,6 @@ function Day({ d, user }) {
                         variant="info" 
                         onClick={() => { history.push(`/days/${formatedDate}/edit`); window.location.reload(false); }}>
                         Edit
-                    </Button>
-                    <Button
-                        className="m-1"
-                        variant="primary"
-                        onClick={() => { history.push(`/days/${formatedDate}/events/add`); window.location.reload(false); }}>
-                        Add Event
                     </Button>
                 </Stack>
             </Row>

@@ -55,7 +55,7 @@ function DayForm({mode, user, date}) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const newDay = {
+        let newDay = {
             date: form.date,
             day_left: day.day_left,
             events: day.events,

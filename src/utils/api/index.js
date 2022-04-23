@@ -56,6 +56,15 @@ export async function createUser(credentials, signal) {
     return await fetchJson(url, options, {});
 }
 
+export async function deleteEvent(date, eventId, userId, signal) {
+    const url = `${API_BASE_URL}/users/${userId}/days/${date}/events/${eventId}`;
+    return await fetch(url, {
+        method: 'DELETE',
+        headers,
+        signal
+    });
+}
+
 export async function loginUser(credentials, signal) {
     const url = `${API_BASE_URL}/login`;
     const options = {
@@ -108,7 +117,7 @@ export async function updateDay(day, userId, signal) {
 
 export async function updateEvent(event, userId, signal) {
     const { date, event_id } = event;
-    const url = `${API_BASE_URL}/users/${userId}/days/${date}/${event_id}`;
+    const url = `${API_BASE_URL}/users/${userId}/days/${date}/events/${event_id}`;
     const options = {
         method: 'PUT',
         headers,
