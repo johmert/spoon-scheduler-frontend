@@ -23,7 +23,7 @@ function EventView({user_id, d}) {
     const [event, setEvent] = useState(initialState);
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
-    const { date, description, name, spoons } = event;
+    const { description, name, spoons } = event;
     const history = useHistory();
 
     useEffect(() => {
