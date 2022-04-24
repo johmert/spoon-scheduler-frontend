@@ -46,7 +46,7 @@ function EventForm({date, mode, user_id}) {
                 }
                 setForm({...response, hours: hrs, minutes: mins })
             } catch (error) {
-                if(error.name !== "AbortController") throw error;
+                if(error.name !== "AbortError") throw error;
             }
         }
         getEvent();

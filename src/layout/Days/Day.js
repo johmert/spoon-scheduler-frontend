@@ -18,7 +18,7 @@ function Day({ days, user }) {
                 <EventForm mode="create" user_id={user.user_id} date={date} />
             </Route>
             <Route exact path={`/days/${date}/events/:eventId`} >
-                <EventView user_id={user.user_id} date={date} />
+                <EventView user_id={user.user_id} d={date} />
             </Route>
             <Route path={`/days/${date}/edit`}>
                 <DayForm mode="edit" user={user} date={date} />
