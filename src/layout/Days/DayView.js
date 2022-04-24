@@ -25,6 +25,8 @@ function DayView({d, days, user_id}) {
     }]
     const [day, setDay] = useState({...initialDayState})
     const [events, setEvents] = useState(initialEventsState);
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState('00');
     const [totalSpoons, setTotalSpoons] = useState(0);
     const history = useHistory();
 
@@ -38,13 +40,18 @@ function DayView({d, days, user_id}) {
             }
             const index = days.findIndex(findDay);
             setDay({...days[index]});
+            const hrs = Math.floor(parseInt(day.day_left) / 60);
+            let mins = parseInt(day.day_left) - (hrs * 60);
+            if(mins === 0) mins = "00";
+            setHours(hrs);
+            setMinutes(mins);
         }
         if(day.events) {
             setEvents(day.events);
             const eventSpoons = events ? day.events.map(event => event.spoons) : [0];
             setTotalSpoons(eventSpoons.reduce((prev, current) => prev + current, 0));
         }
-    }, [d, day.events, days, events]);
+    }, [d, day.day_left, day.events, days, events]);
 
     const eventsListed = events.map((event, index) => 
         <Container key={index}>
@@ -84,7 +91,7 @@ function DayView({d, days, user_id}) {
                 <Col className="text-center">Maximum Spoons</Col>
             </Row>
             <Row>
-                <Col className="m-2 text-center">{day.day_left}</Col>
+                <Col className="m-2 text-center">{hours}:{minutes}</Col>
                 <Col className="m-2 text-center">{totalSpoons}</Col>
                 <Col className="m-2 text-center" size="sm">/</Col>
                 <Col className="m-2 text-center">{day.max_spoons}</Col>

@@ -12,6 +12,7 @@ function EventView({user_id, d}) {
     let formattedDate = d.split('');
         formattedDate.splice(10);
         formattedDate = formattedDate.join('');
+    const displayDate = new Date(formattedDate).toDateString();
     const initialState = {
         name: '',
         date: formattedDate,
@@ -20,7 +21,9 @@ function EventView({user_id, d}) {
         timeDuration: 0,
     }
     const [event, setEvent] = useState(initialState);
-    const { date, description, name, spoons, timeDuration } = event;
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState(0);
+    const { date, description, name, spoons } = event;
     const history = useHistory();
 
     useEffect(() => {
@@ -29,6 +32,11 @@ function EventView({user_id, d}) {
             try {
                 const response = await readEvent(formattedDate, eventId, user_id, abortController.signal);
                 setEvent({...response, date: formattedDate });
+                const hrs = Math.floor(parseInt(response.timeDuration)/60);
+                let mins = parseInt(response.timeDuration) - (hrs * 60);
+                if(mins === 0) mins = "00";
+                setHours(hrs);
+                setMinutes(mins);
             } catch(error) {
                 if(error.name !== "AbortError") throw error;
             }
@@ -69,14 +77,14 @@ function EventView({user_id, d}) {
                 </Stack>
             </Row>
             <Row>
-                <Col className="h6 mt-4 text-center">{date}</Col>
+                <Col className="h6 mt-4 text-center">{displayDate}</Col>
             </Row>
             <Row>
                 <Col className="h3 m-2 text-center">{name}</Col>
             </Row>
             <Row>
                 <Col className="h5 m-2 text-center">{spoons} Spoons</Col>
-                <Col className="h5 m-2 text-center">{timeDuration}</Col>
+                <Col className="h5 m-2 text-center">{hours} hrs {minutes} mins</Col>
             </Row>
             <Row>
                 <Col className="m-3 text-center">{description}</Col>

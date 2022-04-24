@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
@@ -7,15 +7,38 @@ import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 
 function DayPreview({ day }) {
-    let formatedDate = day.date.split("");
-        formatedDate.splice(10);
-        formatedDate = formatedDate.join("");
-
-    const { day_left, events, max_spoons } = day;
+    const [displayDate, setDisplayDate] = useState('2022-00-00');
+    const [displayEventNumber, setDisplayEventNumber] = useState(0);
+    const [displayTotalSpoons, setDisplayTotalSpoons] = useState(0);
+    const [displayMaxSpoons, setDisplayMaxSpoons] = useState(0);
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState('00');
     const history = useHistory();
-    const numberOfEvents = events ? events.length : 0;
-    const eventSpoons = events ? day.events.map(event => event.spoons) : [0];
-    const totalSpoons = eventSpoons.reduce((prev, current) => prev + current, 0);
+    const dateString = new Date(displayDate).toDateString();
+
+    useEffect(() => {
+        if(day){
+            let formatedDate = day.date.split("");
+                formatedDate.splice(10);
+                formatedDate = formatedDate.join("");
+            const numberOfEvents = day.events ? day.events.length : 0;
+            const eventSpoons = day.events ? day.events.map(event => event.spoons) : [0];
+            const totalSpoons = eventSpoons.reduce((prev, current) => prev + current, 0);
+
+            const hrs = Math.floor(parseInt(day.day_left) / 60);
+            let mins = parseInt(day.day_left) - (hrs * 60);
+            if(mins === 0) mins = "00";
+
+            setDisplayDate(formatedDate);
+            setDisplayEventNumber(numberOfEvents);
+            setDisplayTotalSpoons(totalSpoons);
+            setDisplayMaxSpoons(parseInt(day.max_spoons));
+            setHours(hrs);
+            setMinutes(mins);
+        }
+        
+    }, [day]);
+
 
     return (
         <Container className="mb-4">
@@ -27,22 +50,22 @@ function DayPreview({ day }) {
                 <Col className="h6 text-center">Maximum Spoons</Col>
             </Row>
             <Row className="d-flex flex-wrap">
-                <Col className="text-center">{formatedDate}</Col>
-                <Col className="text-center">{day_left}</Col>
-                <Col className="text-center">{numberOfEvents}</Col>
-                <Col className="text-center">{totalSpoons}</Col>
-                <Col className="text-center">{max_spoons}</Col>
+                <Col className="text-center">{dateString}</Col>
+                <Col className="text-center">{hours}:{minutes}</Col>
+                <Col className="text-center">{displayEventNumber}</Col>
+                <Col className="text-center">{displayTotalSpoons}</Col>
+                <Col className="text-center">{displayMaxSpoons}</Col>
                 <Stack className="d-flex justify-content-end" direction="horizontal">
                     <Button
                         className="m-1" 
                         variant="primary" 
-                        onClick={() => { history.push(`/days/${formatedDate}`); window.location.reload(false); }}>
+                        onClick={() => { history.push(`/days/${displayDate}`); window.location.reload(false); }}>
                         View
                     </Button>
                     <Button
                         className="m-1" 
                         variant="info" 
-                        onClick={() => { history.push(`/days/${formatedDate}/edit`); window.location.reload(false); }}>
+                        onClick={() => { history.push(`/days/${displayDate}/edit`); window.location.reload(false); }}>
                         Edit
                     </Button>
                 </Stack>

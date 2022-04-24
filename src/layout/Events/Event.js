@@ -17,6 +17,9 @@ function Event({ date, event, user_id }) {
       formatedDate.splice(10);
       formatedDate = formatedDate.join("");
   }
+  const hrs = Math.floor(parseInt(timeDuration)/60);
+  let mins = parseInt(timeDuration) - (hrs * 60);
+  if(mins === 0) mins = "00";
 
   async function handleDelete() {
     await deleteEvent(formatedDate, event_id, user_id, abortController.signal);
@@ -29,7 +32,7 @@ function Event({ date, event, user_id }) {
       <Row>
         <Col>{name}</Col>
         <Col>{importance}</Col>
-        <Col>{timeDuration}</Col>
+        <Col>{hrs} hrs {mins} mins</Col>
         <Col>{spoons}</Col>
       </Row>
       <Row >
