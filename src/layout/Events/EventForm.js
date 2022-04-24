@@ -10,7 +10,7 @@ import { createEvent, readEvent, updateEvent } from "../../utils/api";
 import SpoonToast from "../../utils/SpoonToast";
 
 
-function EventForm({date, mode, user_id}) {
+function EventForm({ availableTime, date, mode, user_id }) {
     const { eventId } = useParams();
     const [allDay, setAllDay] = useState(false);
     const [disabled, setDisabled] = useState(false);
@@ -53,7 +53,7 @@ function EventForm({date, mode, user_id}) {
         return () => {
             abortController.abort();
         }
-    }, [eventId, formatedDate, mode, user_id]);
+    }, [availableTime, eventId, formatedDate, mode, user_id]);
 
     function handleChange({target}) {
         const { name } = target;
@@ -108,18 +108,15 @@ function EventForm({date, mode, user_id}) {
             } catch(error) {
                 if(error.name !== "AbortError") throw error;
             }
-            history.push(`/days/${date}`);
-            window.location.reload(false);
         } else if(mode === "edit") {
             try {
                 await updateEvent(newEvent, eventId, user_id, abortController2.signal);
             } catch(error) {
                 if(error.name !== "AbortError") throw error;
             }
-            history.push(`/days/${date}`);
-            window.location.reload(false);
         }
-
+        history.push(`/days/${date}`);
+        window.location.reload(false);
     }
 
     return (

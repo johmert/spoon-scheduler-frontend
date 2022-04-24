@@ -11,8 +11,6 @@ function DayPreview({ day }) {
     const [displayEventNumber, setDisplayEventNumber] = useState(0);
     const [displayTotalSpoons, setDisplayTotalSpoons] = useState(0);
     const [displayMaxSpoons, setDisplayMaxSpoons] = useState(0);
-    const [hours, setHours] = useState(0);
-    const [minutes, setMinutes] = useState('00');
     const history = useHistory();
     const dateString = new Date(displayDate).toDateString();
 
@@ -25,16 +23,10 @@ function DayPreview({ day }) {
             const eventSpoons = day.events ? day.events.map(event => event.spoons) : [0];
             const totalSpoons = eventSpoons.reduce((prev, current) => prev + current, 0);
 
-            const hrs = Math.floor(parseInt(day.day_left) / 60);
-            let mins = parseInt(day.day_left) - (hrs * 60);
-            if(mins === 0) mins = "00";
-
             setDisplayDate(formatedDate);
             setDisplayEventNumber(numberOfEvents);
             setDisplayTotalSpoons(totalSpoons);
             setDisplayMaxSpoons(parseInt(day.max_spoons));
-            setHours(hrs);
-            setMinutes(mins);
         }
         
     }, [day]);
@@ -44,14 +36,12 @@ function DayPreview({ day }) {
         <Container className="mb-4">
             <Row>
                 <Col className="h6 text-center">Date</Col>
-                <Col className="h6 text-center">Available Time</Col>
                 <Col className="h6 text-center"># of Events</Col>
                 <Col className="h6 text-center">Scheduled Spoons</Col>
                 <Col className="h6 text-center">Maximum Spoons</Col>
             </Row>
             <Row className="d-flex flex-wrap">
                 <Col className="text-center">{dateString}</Col>
-                <Col className="text-center">{hours}:{minutes}</Col>
                 <Col className="text-center">{displayEventNumber}</Col>
                 <Col className="text-center">{displayTotalSpoons}</Col>
                 <Col className="text-center">{displayMaxSpoons}</Col>

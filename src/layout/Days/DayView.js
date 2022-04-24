@@ -15,19 +15,10 @@ function DayView({d, days, user_id}) {
         max_spoons: 0,
         user_id: user_id
     }
-    const initialEventsState = [{
-        name: '',
-        description: '',
-        spoons: 0,
-        timeDuration: 0,
-        importance: 0,
-        date: ''
-    }]
     const [day, setDay] = useState({...initialDayState})
-    const [events, setEvents] = useState(initialEventsState);
-    const [hours, setHours] = useState(0);
-    const [minutes, setMinutes] = useState('00');
+    const [events, setEvents] = useState([]);
     const [totalSpoons, setTotalSpoons] = useState(0);
+    const displayDate = new Date(d).toDateString();
     const history = useHistory();
 
     useEffect(() => {
@@ -40,18 +31,15 @@ function DayView({d, days, user_id}) {
             }
             const index = days.findIndex(findDay);
             setDay({...days[index]});
-            const hrs = Math.floor(parseInt(day.day_left) / 60);
-            let mins = parseInt(day.day_left) - (hrs * 60);
-            if(mins === 0) mins = "00";
-            setHours(hrs);
-            setMinutes(mins);
         }
         if(day.events) {
             setEvents(day.events);
             const eventSpoons = events ? day.events.map(event => event.spoons) : [0];
             setTotalSpoons(eventSpoons.reduce((prev, current) => prev + current, 0));
         }
-    }, [d, day.day_left, day.events, days, events]);
+    }, [d, day.events, days, events]);
+
+    
 
     const eventsListed = events.map((event, index) => 
         <Container key={index}>
@@ -82,16 +70,14 @@ function DayView({d, days, user_id}) {
                 </Col>
             </Row>
             <Row className="mb-3">
-                <Col className="h2 text-center">{d}</Col>
+                <Col className="h2 text-center">{displayDate}</Col>
             </Row>
             <Row>
-                <Col className="text-center">Available Time</Col>
                 <Col className="text-center">Scheduled Spoons</Col>
                 <Col size="sm"></Col>
                 <Col className="text-center">Maximum Spoons</Col>
             </Row>
             <Row>
-                <Col className="m-2 text-center">{hours}:{minutes}</Col>
                 <Col className="m-2 text-center">{totalSpoons}</Col>
                 <Col className="m-2 text-center" size="sm">/</Col>
                 <Col className="m-2 text-center">{day.max_spoons}</Col>
