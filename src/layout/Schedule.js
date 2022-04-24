@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
 import DayPreview from "./Days/DayPreview";
-import ViewDropdown from "../utils/ViewDropdown";
 
 function Schedule({days, mode, setSettings}) {
     const [dayArray, setDayArray] = useState([]);
@@ -29,8 +28,7 @@ function Schedule({days, mode, setSettings}) {
     const daysListed = dayArray.map((day, index) => <DayPreview key={index} day={day} />);
 
     return (
-        <Container>
-            <ViewDropdown setSettings={setSettings} />
+        <Container className="m-2">
             {daysListed}
         </Container>
     );

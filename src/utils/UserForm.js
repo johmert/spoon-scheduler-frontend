@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button"
 import Container from "react-bootstrap/Container"
 import Form from "react-bootstrap/Form"
 import Stack from "react-bootstrap/Stack"
+import Splash from "./Splash";
 
 function UserForm({setToken}) {
     const [form, setForm] = useState();
@@ -20,7 +21,7 @@ function UserForm({setToken}) {
             <Stack className="d-flex justify-content-center">
                 <Button className="mb-3" variant="primary" type="submit">Submit</Button>
                 <p className="my-2 align-self-center">Not a user? </p>
-                <Button variant="outline-primary" onClick={clickRegister}>Register Now!</Button> 
+                <Button variant="info" onClick={clickRegister}>Register Now!</Button> 
             </Stack>
         );
 
@@ -29,7 +30,7 @@ function UserForm({setToken}) {
             <Form.Control className="mb-3" type="password" onChange={e => setConfirmPassword(e.target.value)} />                
             <Stack className="d-flex justify-content-center">
                 <Button className="mb-3" variant="primary" type="submit">Submit</Button>
-                <Button variant="outline-primary" onClick={()=> window.location.reload(false)}>Cancel</Button>
+                <Button variant="outline-danger" onClick={()=> window.location.reload(false)}>Cancel</Button>
             </Stack>
         </>);
 
@@ -69,6 +70,7 @@ function UserForm({setToken}) {
 
     return(
         <Container>
+            <Splash />
             <h1 className="text-center">Please {label}</h1>
             <Form className="container" onSubmit={handleSubmit}>
                 <Form.Label>Username: </Form.Label>

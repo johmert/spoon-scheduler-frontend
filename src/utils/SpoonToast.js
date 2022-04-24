@@ -4,10 +4,9 @@ import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Toast from "react-bootstrap/Toast";
 
-function SpoonToast({spoons}) {
+function SpoonToast() {
     const [showSpoonHint, setShowSpoonHint] = useState(false);
     const toggleShowSpoonHint = () => setShowSpoonHint(!showSpoonHint);
-    const label = spoons > 0 ? "your past events" : "our suggestions" 
 
     return (
         <Row>
@@ -16,21 +15,14 @@ function SpoonToast({spoons}) {
                 <Toast show={showSpoonHint} onClose={toggleShowSpoonHint}>
                     <Toast.Header>
                         <strong className="me-auto">Here's some tips </strong>
-                        <small>from {label}</small>
+                        <small>from our suggestions</small>
                     </Toast.Header>
                     <Toast.Body>
-                        <ol>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                            <li></li>
-                        </ol>
+                        <p><strong>1 spoon</strong> Brushing Teeth</p>
+                        <p><strong>5 spoons</strong> Average Work Day</p>
+                        <p><strong>8 spoons</strong> Take a difficult test</p>
+                        <p><strong>10 spoons</strong> Help a friend move</p>
+                        <a href="https://en.wikipedia.org/wiki/Spoon_theory">Read about Spoon Theory</a>
                     </Toast.Body>
                 </Toast>
             </Col>

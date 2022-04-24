@@ -42,18 +42,7 @@ function DayView({d, days, user_id}) {
     
 
     const eventsListed = events.map((event, index) => 
-        <Container key={index}>
-            <Row className="mt-4">
-                <Col className="h6">Name</Col>
-                <Col className="h6">Important?</Col>
-                <Col className="h6">Duration</Col>
-                <Col className="h6"># of Spoons</Col>
-            </Row>
-            <Row>
-                <Event date={day.date} event={event} user_id={user_id} />
-            </Row>
-        </Container>
-        
+        <Event key={index} date={day.date} event={event} user_id={user_id} />
     );
     
 

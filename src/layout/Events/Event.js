@@ -28,15 +28,21 @@ function Event({ date, event, user_id }) {
   }
 
   return (
-    <Container className="mb-4 mt-4">
+    <Container className="border mb-4 mt-4 p-3">
+      <Row className="mt-4">
+        <Col className="h6">Name</Col>
+        <Col className="h6">Important?</Col>
+        <Col className="h6">Duration</Col>
+        <Col className="h6"># of Spoons</Col>
+      </Row>
       <Row>
         <Col>{name}</Col>
         <Col>{importance}</Col>
         <Col>{hrs} hrs {mins} mins</Col>
-        <Col>{spoons}</Col>
+        <Col className="text-center">{spoons}</Col>
       </Row>
       <Row >
-        <Stack className="d-flex justify-content-end mt-2" direction="horizontal">
+        <Stack className="d-flex justify-content-end mt-4" direction="horizontal">
           <Button 
             className="m-1" 
             variant="primary"

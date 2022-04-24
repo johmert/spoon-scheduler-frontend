@@ -33,7 +33,7 @@ function DayPreview({ day }) {
 
 
     return (
-        <Container className="mb-4">
+        <Container className="border mb-4 p-4" variant="preview">
             <Row>
                 <Col className="h6 text-center">Date</Col>
                 <Col className="h6 text-center"># of Events</Col>
