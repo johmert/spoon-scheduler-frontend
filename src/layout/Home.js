@@ -59,7 +59,7 @@ function Home({userId, setToken}) {
                         <Day days={days} user={user} />
                     </Route>
                     <Route exact path="/">
-                        <Schedule days={days} mode={settings} user={user} setSettings={setSettings} />
+                        <Schedule days={days} mode={settings} setSettings={setSettings} />
                     </Route>
                     <Route>
                         <NotFound />

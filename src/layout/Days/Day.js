@@ -6,25 +6,25 @@ import EventForm from "../Events/EventForm";
 import EventView from "../Events/EventView";
 import NotFound from "../../utils/NotFound";
 
-function Day({user}) {
+function Day({ days, user }) {
     const { date } = useParams();
     
     return (
         <Switch>
             <Route path={`/days/${date}/events/:eventId/edit`}>
-                <EventForm mode="edit" user={user} date={date} />
+                <EventForm mode="edit" user_id={user.user_id} date={date} />
             </Route>
             <Route path={`/days/${date}/events/add`}>
-                <EventForm mode="create" user={user} date={date} />
+                <EventForm mode="create" user_id={user.user_id} date={date} />
             </Route>
             <Route exact path={`/days/${date}/events/:eventId`} >
-                <EventView user={user} date={date} />
+                <EventView user_id={user.user_id} date={date} />
             </Route>
             <Route path={`/days/${date}/edit`}>
                 <DayForm mode="edit" user={user} date={date} />
             </Route>
             <Route exact path={`/days/${date}`}>
-                <DayView user={user} date={date} />
+                <DayView d={date} days={days} user_id={user.user_id} />
             </Route>
             <Route>
                 <NotFound />

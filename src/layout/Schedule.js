@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import DayPreview from "./Days/DayPreview";
 import ViewDropdown from "../utils/ViewDropdown";
 
-function Schedule({days, mode, user, setSettings}) {
+function Schedule({days, mode, setSettings}) {
 
     useEffect(() => {
         if(days){

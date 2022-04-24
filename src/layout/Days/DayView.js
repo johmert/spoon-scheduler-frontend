@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { readDay } from "../../utils/api";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
@@ -8,8 +7,7 @@ import Row from "react-bootstrap/Row";
 import Stack from "react-bootstrap/Stack";
 import Event from "../Events/Event";
 
-function DayView({date, user}) {
-    const { user_id } = user;
+function DayView({d, days, user_id}) {
     const initialDayState = {
         date: '',
         day_left: 0,
@@ -25,39 +23,31 @@ function DayView({date, user}) {
         importance: 0,
         date: ''
     }]
-    const [day, setDay] = useState(initialDayState)
+    const [day, setDay] = useState({...initialDayState})
     const [events, setEvents] = useState(initialEventsState);
     const [totalSpoons, setTotalSpoons] = useState(0);
-    
     const history = useHistory();
 
     useEffect(() => {
-        const abortController = new AbortController();
-        async function getDay() {
-            try{
-                const response = await readDay(date, user_id, abortController.signal)
-                setDay(response);
-            } catch (error) {
-                if(error.name !== "AbortError"){
-                    throw error;
-                }
+        if(days) {
+            function findDay(element) {
+                let date = element.date.split('');
+                date.splice(10);
+                date = date.join('');
+                return date === d;
             }
+            const index = days.findIndex(findDay);
+            setDay({...days[index]});
         }
-        getDay();
-        setEvents(day.events);
-        if(events.length > 1) {
-            const eventSpoons = events.map(event => event.spoons);
-            const result = eventSpoons.reduce((prev, current) => prev + current, 0);
-            setTotalSpoons(result);
+        if(day.events) {
+            setEvents(day.events);
+            const eventSpoons = events ? day.events.map(event => event.spoons) : [0];
+            setTotalSpoons(eventSpoons.reduce((prev, current) => prev + current, 0));
         }
-        return () => {
-            abortController.abort();
-        }
+    }, [d, day.events, days, events]);
 
-    }, [day.events, date, events, user_id])
-
-    const eventsListed = events.map((event, key) => 
-        <Container key={key}>
+    const eventsListed = events.map((event, index) => 
+        <Container key={index}>
             <Row className="mt-4">
                 <Col className="h6">Name</Col>
                 <Col className="h6">Important?</Col>
@@ -79,13 +69,13 @@ function DayView({date, user}) {
                     <Button
                         className="m-1" 
                         variant="info" 
-                        onClick={() => { history.push(`/days/${date}/edit`); window.location.reload(false); }}>
+                        onClick={() => { history.push(`/days/${d}/edit`); window.location.reload(false); }}>
                         Edit
                     </Button>
                 </Col>
             </Row>
             <Row className="mb-3">
-                <Col className="h2 text-center">{date}</Col>
+                <Col className="h2 text-center">{d}</Col>
             </Row>
             <Row>
                 <Col className="text-center">Available Time</Col>
@@ -104,7 +94,7 @@ function DayView({date, user}) {
                     <Button 
                         className="m-3" 
                         variant="primary"
-                        onClick={() =>{ history.push(`/days/${date}/events/add`); window.location.reload(false); }}>
+                        onClick={() =>{ history.push(`/days/${d}/events/add`); window.location.reload(false); }}>
                         + Add Event
                     </Button>
                 </Stack>

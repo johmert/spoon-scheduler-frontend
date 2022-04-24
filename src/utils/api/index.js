@@ -124,9 +124,9 @@ export async function updateDay(day, userId, signal) {
     return await fetchJson(url, options, {});
 }
 
-export async function updateEvent(event, userId, signal) {
-    const { date, event_id } = event;
-    const url = `${API_BASE_URL}/users/${userId}/days/${date}/events/${event_id}`;
+export async function updateEvent(event, eventId, userId, signal) {
+    const { date } = event;
+    const url = `${API_BASE_URL}/users/${userId}/days/${date}/events/${eventId}`;
     const options = {
         method: 'PUT',
         headers,

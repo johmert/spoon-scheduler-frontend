@@ -27,19 +27,13 @@ function DayForm({mode, user, date}) {
     const history = useHistory();
 
     useEffect(() => {
-        const abortController = new AbortController();
-        const initialState = {
-            date: '',
-            max_spoons: avg_spoons * 2,
-        };
+        const abortController = new AbortController();;
         async function getDay() {
             if(mode === "create") return;
             try {
                 const response = await readDay(formatedDate, user_id, abortController.signal);
                 setDay({...response, date: formatedDate });
-                initialState.date = formatedDate;                    
-                initialState.max_spoons = response.max_spoons;
-                setForm({...initialState});
+                setForm({...response, date: formatedDate });
             } catch(error) {
                 if(error.name !== "AbortError") {
                     throw error;
