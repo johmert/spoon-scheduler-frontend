@@ -28,7 +28,8 @@ function Schedule({days, mode, setSettings}) {
     const daysListed = dayArray.map((day, index) => <DayPreview key={index} day={day} />);
 
     return (
-        <Container className="m-2">
+        <Container className="mt-2">
+            <p className="h3 m-3 text-center">Schedule Overview: </p>
             {daysListed}
         </Container>
     );

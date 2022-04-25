@@ -6,15 +6,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Stack from "react-bootstrap/Stack";
 
-function DayForm({mode, user, date}) {
-    const { avg_spoons, user_id } = user;
-    let formatedDate = date;
-    if( date ) { 
-        formatedDate = formatedDate.split("");
-        formatedDate.splice(10);
-        formatedDate = formatedDate.join("");
-    }
-    
+function DayForm({mode, user_id, date}) {
     const initialStateDay = {
         date: '',
         day_left: 0,
@@ -23,17 +15,28 @@ function DayForm({mode, user, date}) {
         user_id: user_id
     };
     const [day, setDay] = useState(initialStateDay);
-    const [form, setForm] = useState({ date: '', max_spoons: avg_spoons *2 });
+    const [form, setForm] = useState({ date: '', max_spoons: 0 });
+    const [formatedDate, setFormatedDate] = useState('');
     const history = useHistory();
 
     useEffect(() => {
-        const abortController = new AbortController();;
+        const abortController = new AbortController();
+        let formDate = date;
+        if( date ) { 
+            formDate = formDate.split("");
+            formDate.splice(10);
+            formDate = formDate.join("");
+            setFormatedDate(formDate);
+        }
         async function getDay() {
             if(mode === "create") return;
             try {
-                const response = await readDay(formatedDate, user_id, abortController.signal);
-                setDay({...response, date: formatedDate });
-                setForm({...response, date: formatedDate });
+                const response = await readDay(formDate, user_id, abortController.signal);
+                if(response) {
+                    setDay({ ...response, date: formDate });
+                    setForm({ ...response, date: formDate });
+                }
+                
             } catch(error) {
                 if(error.name !== "AbortError") {
                     throw error;
@@ -45,7 +48,7 @@ function DayForm({mode, user, date}) {
             abortController.abort();
         }
         
-    }, [avg_spoons, formatedDate, mode, user_id]);
+    }, [date, formatedDate, mode, user_id]);
 
     async function handleSubmit(e) {
         const abortController2 = new AbortController();

@@ -14,37 +14,51 @@ function EventForm({ availableTime, date, mode, user_id }) {
     const { eventId } = useParams();
     const [allDay, setAllDay] = useState(false);
     const [disabled, setDisabled] = useState(false);
-    let formatedDate = date;
-    if( date ) { 
-        formatedDate = formatedDate.split("");
-        formatedDate.splice(10);
-        formatedDate = formatedDate.join("");
-    }
+    const [formatedDate, setFormatedDate] = useState('');
     const initialState = {
         name: '',
-        importance: 0,
+        important: false,
         spoons: 0,
         description: '',
         hours: 0,
-        minutes: 0,
-        timeDuration: 0
+        minutes: 0
     }
     const [form, setForm] = useState({...initialState})
     const history = useHistory();
 
     useEffect(() => {
         const abortController = new AbortController();
+        let formDate = date;
+        if( date ) { 
+            formDate = formDate.split("");
+            formDate.splice(10);
+            formDate = formDate.join("");
+            setFormatedDate(formDate);
+        }
+        const initialForm = {
+            name: '',
+            important: false,
+            spoons: 0,
+            description: '',
+            hours: 0,
+            minutes: 0
+        }
         async function getEvent() {
             if(mode === "create") return;
             try {
-                const response = await readEvent(formatedDate, eventId, user_id, abortController.signal);
-                const hrs = Math.floor(response.timeDuration / 60);
-                const mins = response.timeDuration - (hrs * 60);
+                const response = await readEvent(formDate, eventId, user_id, abortController.signal);
+                initialForm.name = response.name;
+                initialForm.description = response.name;
+                initialForm.spoons = !isNaN(response.spoons) ? response.spoons : 0;
+                const hrs = Math.floor(parseInt(response.timeDuration) / 60);
+                const mins = parseInt(response.timeDuration) - (hrs * 60);
                 if(hrs === 24) {
                     setAllDay(true);
                     setDisabled(true);
                 }
-                setForm({...response, hours: hrs, minutes: mins })
+                initialForm.hours = hrs;
+                initialForm.minutes = mins;
+                setForm({...initialForm});
             } catch (error) {
                 if(error.name !== "AbortError") throw error;
             }
@@ -53,7 +67,7 @@ function EventForm({ availableTime, date, mode, user_id }) {
         return () => {
             abortController.abort();
         }
-    }, [availableTime, eventId, formatedDate, mode, user_id]);
+    }, [availableTime, date, eventId, mode, user_id]);
 
     function handleChange({target}) {
         const { name } = target;
@@ -62,8 +76,7 @@ function EventForm({ availableTime, date, mode, user_id }) {
                 setForm({...form, name: target.value }); 
                 break;
             case "importance":
-                const impValue = target.checked ? 1 : 0;
-                setForm({...form, importance: impValue }); 
+                setForm({...form, importance: target.checked }); 
                 break;
             case "spoons":
                 const spValue = parseInt(target.value);
@@ -96,7 +109,7 @@ function EventForm({ availableTime, date, mode, user_id }) {
         const abortController2 = new AbortController();
         let newEvent = {
             name: form.name,
-            importance: form.importance,
+            important: form.important,
             spoons: form.spoons,
             description: form.description,
             timeDuration: (form.hours * 60) + form.minutes,
@@ -129,7 +142,7 @@ function EventForm({ availableTime, date, mode, user_id }) {
                         <Form.Control name="name" className="mb-1" type="text" value={form["name"]} onChange={handleChange} />
                     </Col>
                     <Col>
-                        <Form.Check name="importance" checked={form["importance"]} className="m-3" type="switch" value={1} label="Important" onChange={handleChange} isInvalid/> 
+                        <Form.Check name="importance" checked={form["important"]} className="m-3" type="switch" label="Important" onChange={handleChange} isInvalid/> 
                     </Col>
                 </Form.Group>
                 <Form.Group className="d-flex flex-wrap mt-3 mb-3" as={Row}>
@@ -145,7 +158,7 @@ function EventForm({ availableTime, date, mode, user_id }) {
                 <Form.Control name="description" className="mb-3" as="textarea" rows={4} value={form["description"]} onChange={handleChange} />
                 <Form.Label>Duration: </Form.Label>
                 <Container className="d-flex justify-content-center">
-                    <Form.Check name="all-day" checked={allDay} className="mt-3" type="switch" value={allDay} label="All-day" onChange={handleChange} />
+                    <Form.Check name="all-day" checked={allDay} className="mt-3" type="switch" label="All-day" onChange={handleChange} />
                 </Container>
                 <Form.Group as={Row} className="d-flex justify-content-around mb-3" direction="horizontal">
                     <Form.Group as={Col} className="m-3">

@@ -3,7 +3,6 @@ import { Route, Switch, useParams } from "react-router-dom";
 import DayForm from "../Days/DayForm";
 import DayView from "../Days/DayView";
 import EventForm from "../Events/EventForm";
-import EventView from "../Events/EventView";
 import NotFound from "../../utils/NotFound";
 
 function Day({ days, user }) {
@@ -27,11 +26,8 @@ function Day({ days, user }) {
                     days={days}
                 />
             </Route>
-            <Route exact path={`/days/${date}/events/:eventId`} >
-                <EventView user_id={user.user_id} d={date} />
-            </Route>
             <Route path={`/days/${date}/edit`}>
-                <DayForm mode="edit" user={user} date={date} />
+                <DayForm mode="edit" user_id={user.user_id} date={date} />
             </Route>
             <Route exact path={`/days/${date}`}>
                 <DayView 

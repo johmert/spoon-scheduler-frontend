@@ -35,16 +35,24 @@ function DayPreview({ day }) {
     return (
         <Container className="border mb-4 p-4" variant="preview">
             <Row>
-                <Col className="h6 text-center">Date</Col>
-                <Col className="h6 text-center"># of Events</Col>
-                <Col className="h6 text-center">Scheduled Spoons</Col>
-                <Col className="h6 text-center">Maximum Spoons</Col>
+                <Col className="m-2">
+                    <Row className="h6">Date</Row>
+                    <Row>{dateString}</Row>
+                </Col>
+                <Col className="m-2">
+                    <Row className="h6"># of Events</Row>
+                    <Row>{displayEventNumber}</Row>
+                </Col>
+                <Col className="m-2">
+                    <Row className="h6">Scheduled Spoons</Row>
+                    <Row>{displayTotalSpoons}</Row>
+                </Col>
+                <Col className="m-2">
+                    <Row className="h6">Max Spoons</Row>
+                    <Row>{displayMaxSpoons}</Row>
+                </Col>
             </Row>
             <Row className="d-flex flex-wrap">
-                <Col className="text-center">{dateString}</Col>
-                <Col className="text-center">{displayEventNumber}</Col>
-                <Col className="text-center">{displayTotalSpoons}</Col>
-                <Col className="text-center">{displayMaxSpoons}</Col>
                 <Stack className="d-flex justify-content-end" direction="horizontal">
                     <Button
                         className="m-1" 

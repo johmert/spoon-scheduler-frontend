@@ -9,33 +9,33 @@ import Stack from "react-bootstrap/Stack";
 
 function EventView({user_id, d}) {
     const { eventId } = useParams();
-    let formattedDate = d.split('');
-        formattedDate.splice(10);
-        formattedDate = formattedDate.join('');
-    const displayDate = new Date(formattedDate).toDateString();
-    const initialState = {
-        name: '',
-        date: formattedDate,
-        description: '',
-        spoons: 0,
-        timeDuration: 0,
-    }
-    const [event, setEvent] = useState(initialState);
+    const [displayDate, setDisplayDate] = useState('');
+    const [displayDescription, setDisplayDescription] = useState('');
+    const [displayName, setDisplayName] = useState('');
+    const [displaySpoons, setDisplaySpoons] = useState(0); 
     const [hours, setHours] = useState(0);
+    const [important, setImportant] = useState(false);
     const [minutes, setMinutes] = useState(0);
-    const { description, name, spoons } = event;
     const history = useHistory();
 
     useEffect(() => {
         const abortController = new AbortController();
+        let formattedDate = d.split('');
+            formattedDate.splice(10);
+            formattedDate = formattedDate.join('');
+        const dateValue = new Date(formattedDate).toDateString();
+        setDisplayDate(dateValue);
         async function getEvent() {
             try {
                 const response = await readEvent(formattedDate, eventId, user_id, abortController.signal);
-                setEvent({...response, date: formattedDate });
+                setDisplayDescription(response.description);
+                setDisplayName(response.name);
+                setDisplaySpoons(response.spoons);
+                setImportant(response.important);
                 const hrs = Math.floor(parseInt(response.timeDuration)/60);
                 let mins = parseInt(response.timeDuration) - (hrs * 60);
                 if(mins === 0) mins = "00";
-                setHours(hrs);
+                setHours(hrs);                    
                 setMinutes(mins);
             } catch(error) {
                 if(error.name !== "AbortError") throw error;
@@ -45,16 +45,18 @@ function EventView({user_id, d}) {
         return () => {
             abortController.abort();
         }
-    }, [formattedDate, eventId, user_id]);
+    }, [d, eventId, user_id])
 
     async function handleDelete() {
         const abortController2 = new AbortController();
-        try{
-            await deleteEvent(formattedDate, eventId, user_id, abortController2.signal);
-        } catch(error) { 
-            if(error.name !== "AbortError") throw error; 
+        if(window.confirm("Delete Event?\n\nYou will notbe able to recover it.")){
+            try{
+                await deleteEvent(displayDate, eventId, user_id, abortController2.signal);
+            } catch(error) { 
+                if(error.name !== "AbortError") throw error; 
+            }
         }
-        history.push(`/days/${formattedDate}/`);
+        history.push(`/days/${displayDate}/`);
         window.location.reload(false);
       }
 
@@ -65,7 +67,7 @@ function EventView({user_id, d}) {
                     <Button 
                         className="m-2" 
                         variant="info"
-                        onClick={() => { history.push(`/days/${formattedDate}/events/${eventId}/edit`); window.location.reload(false); }}>
+                        onClick={() => { history.push(`/days/${displayDate}/events/${eventId}/edit`); window.location.reload(false); }}>
                         Edit
                     </Button>
                     <Button 
@@ -80,14 +82,15 @@ function EventView({user_id, d}) {
                 <Col className="h6 mt-4 text-center">{displayDate}</Col>
             </Row>
             <Row>
-                <Col className="h3 m-2 text-center">{name}</Col>
+                <Col className="h3 m-2 text-center">{displayName}</Col>
             </Row>
             <Row>
-                <Col className="h5 m-2 text-center">{spoons} Spoons</Col>
+                <Col className="h5 m-2 text-center" hidden={!important} variant="danger">Important</Col>
+                <Col className="h5 m-2 text-center">{displaySpoons} Spoons</Col>
                 <Col className="h5 m-2 text-center">{hours} hrs {minutes} mins</Col>
             </Row>
             <Row>
-                <Col className="m-3 text-center">{description}</Col>
+                <Col className="m-3 text-center">{displayDescription}</Col>
             </Row>
         </Container>
     );
