@@ -22,7 +22,9 @@ function SpoonToast() {
                         <p><strong>5 spoons</strong> Average Work Day</p>
                         <p><strong>8 spoons</strong> Take a difficult test</p>
                         <p><strong>10 spoons</strong> Help a friend move</p>
-                        <a href="https://en.wikipedia.org/wiki/Spoon_theory">Read about Spoon Theory</a>
+                        <a href="https://en.wikipedia.org/wiki/Spoon_theory" rel="noreferrer" target="_blank">
+                            Read about Spoon Theory
+                        </a>
                     </Toast.Body>
                 </Toast>
             </Col>

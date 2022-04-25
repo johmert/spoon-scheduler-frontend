@@ -26,11 +26,19 @@ function Schedule({days, mode, setSettings}) {
     }, [dayArray, days, mode]);
 
     const daysListed = dayArray.map((day, index) => <DayPreview key={index} day={day} />);
-
+    const addLink = 
+        <>
+        <p className="h3 text-center">Oops! Looks like there's nothing here!</p>
+        <p className="display-4 text-center">
+            <a href="/days/add">Get Started - Add a Day</a>
+        </p>
+        </>
+    const addDayPrompt = dayArray.length === 0 ? addLink : '';
     return (
         <Container className="mt-2">
             <p className="h3 m-3 text-center">Schedule Overview: </p>
             {daysListed}
+            {addDayPrompt}
         </Container>
     );
 }
