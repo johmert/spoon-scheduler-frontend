@@ -53,7 +53,7 @@ function Home({userId, setToken}) {
             <Container>
                 <Switch>
                     <Route exact path="/days/add">
-                        <DayForm mode="create" user={user} />
+                        <DayForm mode="create" user_id={user.user_id} />
                     </Route>
                     <Route path={`/days/:date`}>
                         <Day days={days} user={user} />
