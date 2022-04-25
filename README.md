@@ -45,21 +45,37 @@ To learn more about spoon theory, check out: https://en.wikipedia.org/wiki/Spoon
 
 Each user begins at the login screen, with the option to register if they don't already have an account.
 
+![user login screen](https://i.imgur.com/GRRjgOC.jpg)
+
+![user registration screen](https://i.imgur.com/ZYJKSuA.jpg)
+
 ### Schedule Overview
 
 The Schedule Overview allows a user to view a list of days, how many events are scheduled that day, the total number of spoons scheduled, and the user's set "maximum spoons" for that day. If no days are in the list, a message and link to get started are displayed instead.
+
+![schedule overview](https://i.imgur.com/sr6MtJ3.jpg)
 
 ### Add / Edit Day
 
 Depending on if a user is creating or editing an day, the form will appear slightly different. When creating, users can choose a date as well as set a "maximum spoons" value for the day. When editing, the date is displayed but disabled as this is not something the user can edit.
 
+![create day form](https://i.imgur.com/3SICmSn.jpg)
+
+![edit day form](https://i.imgur.com/coPeWdd.jpg)
+
 ### Day View
 
 Viewing a day allows a user to view a list of events scheduled on that particular day. The total scheduled spoons and day's set "maximum spoons" are also displayed prominantly. From here, a user can add, edit, and delete events. Events are listed with a name, description, tagged as important or not, the duration of the event, and number of spoons.
 
+![day view, events listed](https://i.imgur.com/vHe2X2w.jpg)
+
 ## Add / Edit Event
 
 The event form looks identical whether a user is creating or updating an event, with the exception of the form's label at the top of the page. A user can set the name, importance, number of spoons, description, and time duration of an event. When the user checks the "All-day" switch, the hours/minutes dropdown menus are disabled, and the event's duration is set for 24 hours.
+
+![create event form](https://i.imgur.com/XBya1u7.jpg)
+
+![edit event form](https://i.imgur.com/LwVN77N.jpg)
 
 ## API
 
