@@ -34,8 +34,10 @@ function DayView({d, days, user_id}) {
         }
         if(day.events) {
             setEvents(day.events);
-            const eventSpoons = events ? day.events.map(event => event.spoons) : [0];
-            setTotalSpoons(eventSpoons.reduce((prev, current) => prev + current, 0));
+            const eventSpoons = day.events !== null ? day.events.map(event => event.spoons) : 0;
+            const totalSpoonsLocal = eventSpoons.reduce((prev, current) => prev + current, 0);
+            const totalSpoonsValue = !isNaN(totalSpoonsLocal) ? totalSpoonsLocal : 0;
+            setTotalSpoons(totalSpoonsValue);
         }
     }, [d, day.events, days, events]);
 
