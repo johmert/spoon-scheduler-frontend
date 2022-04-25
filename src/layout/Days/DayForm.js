@@ -55,7 +55,6 @@ function DayForm({mode, user_id, date}) {
         e.preventDefault();
         let newDay = {
             date: form.date,
-            day_left: day.day_left,
             events: day.events,
             max_spoons: form.max_spoons,
             user_id: day.user_id
@@ -64,6 +63,7 @@ function DayForm({mode, user_id, date}) {
             try {
                 await updateDay(newDay, user_id, abortController2.signal);
             } catch(error) {
+                console.log(error.status)
                 if(error.name !== "AbortError") {
                     throw error;
                 }

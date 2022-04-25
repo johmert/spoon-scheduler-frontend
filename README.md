@@ -35,9 +35,9 @@ To learn more about spoon theory, check out: https://en.wikipedia.org/wiki/Spoon
 
 1. Fork and clone this repository.
 2. Run `cp .env.sample .env`.
-3. Update the `.env` file with the connection URL to your ElephantSQL database instance.
+3. You should not need to make any changes to the `.env` file unless you want to connect to a backend at a location other than `http://localhost:8080`.
 4. Run `npm install` to install project dependencies.
-5. Run `npm run start:dev` to start your server in development mode.
+5. Run `npm start` to start your server.
 
 ## Features
 

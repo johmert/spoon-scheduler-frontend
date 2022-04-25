@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import DayPreview from "./Days/DayPreview";
 
 function Schedule({days, mode, setSettings}) {
     const [dayArray, setDayArray] = useState([]);
+    const history = useHistory();
 
     useEffect(() => {
         if(days){
@@ -26,19 +29,19 @@ function Schedule({days, mode, setSettings}) {
     }, [dayArray, days, mode]);
 
     const daysListed = dayArray.map((day, index) => <DayPreview key={index} day={day} />);
-    const addLink = 
-        <>
-        <p className="h3 text-center">Oops! Looks like there's nothing here!</p>
-        <p className="display-4 text-center">
-            <a href="/days/add">Get Started - Add a Day</a>
-        </p>
-        </>
-    const addDayPrompt = dayArray.length === 0 ? addLink : '';
+    
     return (
         <Container className="mt-2">
             <p className="h3 m-3 text-center">Schedule Overview: </p>
             {daysListed}
-            {addDayPrompt}
+            <Container className="d-flex justify-content-center mt-3">
+                <Button 
+                    className="m-3" 
+                    variant="primary" 
+                    onClick={() => { history.push("/days/add"); window.location.reload(false); }}>
+                    + Add Day
+                </Button>
+            </Container>
         </Container>
     );
 }

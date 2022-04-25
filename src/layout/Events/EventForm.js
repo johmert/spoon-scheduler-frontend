@@ -48,7 +48,7 @@ function EventForm({ availableTime, date, mode, user_id }) {
             try {
                 const response = await readEvent(formDate, eventId, user_id, abortController.signal);
                 initialForm.name = response.name;
-                initialForm.description = response.name;
+                initialForm.description = response.description;
                 initialForm.spoons = !isNaN(response.spoons) ? response.spoons : 0;
                 const hrs = Math.floor(parseInt(response.timeDuration) / 60);
                 const mins = parseInt(response.timeDuration) - (hrs * 60);
@@ -76,7 +76,7 @@ function EventForm({ availableTime, date, mode, user_id }) {
                 setForm({...form, name: target.value }); 
                 break;
             case "importance":
-                setForm({...form, importance: target.checked }); 
+                setForm({...form, important: target.checked }); 
                 break;
             case "spoons":
                 const spValue = parseInt(target.value);
