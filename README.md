@@ -1,70 +1,85 @@
-# Getting Started with Create React App
+# Spoon Scheduler
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Website URL: 
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+* [General Information](#general-information)
+* [Technologies](#technologies)
+* [Installation](#installation)
+* [Features](#features)
+* [API](#api)
 
-### `npm start`
+## General Information
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+This is a project that allows a user to plan daily events according to mental stamina (aka "spoons") as well as time and importance constraints.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+To learn more about spoon theory, check out: https://en.wikipedia.org/wiki/Spoon_theory
 
-### `npm test`
+## Technologies
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Front End ( https://github.com/johmert/spoon-scheduler-frontend )
 
-### `npm run build`
+* React.js
+* react-bootstrap
+* CSS
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Back End ( https://github.com/johmert/spoon-scheduler-backend )
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* Node.js
+* Express.js
+* Knex.js
+* PostgreSQL
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Installation
 
-### `npm run eject`
+1. Fork and clone this repository.
+2. Run `cp .env.sample .env`.
+3. Update the `.env` file with the connection URL to your ElephantSQL database instance.
+4. Run `npm install` to install project dependencies.
+5. Run `npm run start:dev` to start your server in development mode.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### User Login / Registration
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Each user begins at the login screen, with the option to register if they don't already have an account.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Schedule Overview
 
-## Learn More
+The Schedule Overview allows a user to view a list of days, how many events are scheduled that day, the total number of spoons scheduled, and the user's set "maximum spoons" for that day. If no days are in the list, a message and link to get started are displayed instead.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Add / Edit Day
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Depending on if a user is creating or editing an day, the form will appear slightly different. When creating, users can choose a date as well as set a "maximum spoons" value for the day. When editing, the date is displayed but disabled as this is not something the user can edit.
 
-### Code Splitting
+### Day View
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Viewing a day allows a user to view a list of events scheduled on that particular day. The total scheduled spoons and day's set "maximum spoons" are also displayed prominantly. From here, a user can add, edit, and delete events. Events are listed with a name, description, tagged as important or not, the duration of the event, and number of spoons.
 
-### Analyzing the Bundle Size
+## Add / Edit Event
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+The event form looks identical whether a user is creating or updating an event, with the exception of the form's label at the top of the page. A user can set the name, importance, number of spoons, description, and time duration of an event. When the user checks the "All-day" switch, the hours/minutes dropdown menus are disabled, and the event's duration is set for 24 hours.
 
-### Making a Progressive Web App
+## API
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+* POST `/users/` - creates a new user
+* POST `/users/:username` - logs in a user
+* GET `/users/:userId` - reads user, attaching an array of dates associated with the user.
+* GET `/users/:userId/days/` - lists days associated with a user
+* GET `/users/:userId/days/:date` - reads a specific day
+* PUT `/users/:userId/days/:date` - updates a day
+* GET `/users/:userId/days/:date/events/` - lists events associated with a specific user & day
+* POST `/users/:userId/days/:date/events` - creates an event
+* GET `/users/:userId/days/:date/events/:eventId` - reads a specific event
+* PUT `/users/:userId/days/:date/events/:eventId` - updates a specific event
+* DELETE `/users/:userId/days/:date/events/:eventId` - deletes a specific event
 
-### Advanced Configuration
+### Parameters
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Parameter | Type |
+|-----------|------|
+| `user_id` | `uuid` |
+| `username` | `string`|
+| `date` | `date` |
+| `event_id` | `uuid` |
