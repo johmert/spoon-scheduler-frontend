@@ -2,6 +2,7 @@ const API_BASE_URL = "https://spoon-scheduler-backend.herokuapp.com";
 
 const headers = new Headers();
 headers.append("Content-Type", "application/json");
+headers.append("Access-Control-Allow-Origin", "*");
 
 async function fetchJson(url, options, onCancel) {
     try {
