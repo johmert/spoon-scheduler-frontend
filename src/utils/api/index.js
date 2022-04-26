@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://spoon-scheduler-backend.herokuapp.com";
+const API_BASE_URL = "https://spoon-scheduler.herokuapp.com";
 
 const headers = new Headers();
 headers.append("Content-Type", "application/json");
